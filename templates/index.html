@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>PCOS Care | Dashboard</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='theme.css') }}">
+
+    <style>
+        :root {
+            --rose: #b8587a;
+            --rose-dark: #984363;
+            --plum: #4b2e43;
+            --pink-bg: #fff5f7;
+            --pink-soft: #fff0f4;
+            --text-muted: #746975;
+            --border-soft: #f0dfe6;
+        }
+        body {
+            font-family: 'Quicksand', sans-serif;
+            background: #fff9fb;
+            color: var(--plum);
+        }
+        .navbar { border-bottom: 1px solid var(--border-soft); }
+        .brand-mark {
+            width: 38px; height: 38px; display: inline-flex; align-items: center;
+            justify-content: center; border-radius: 12px; background: var(--pink-soft);
+            color: var(--rose); margin-right: 9px;
+        }
+        .btn-rose { background: var(--rose); color: #fff; border: 1px solid var(--rose); }
+        .btn-rose:hover { background: var(--rose-dark); color: #fff; border-color: var(--rose-dark); }
+        .btn-outline-rose { color: var(--rose); border: 1px solid var(--rose); }
+        .btn-outline-rose:hover { background: var(--rose); color: #fff; }
+        .page-wrap { max-width: 1160px; }
+        .welcome-panel {
+            background: linear-gradient(115deg, #fff0f4 0%, #fff 68%, #f8edf6 100%);
+            border: 1px solid var(--border-soft); border-radius: 22px;
+            padding: 25px 28px; position: relative; overflow: hidden;
+        }
+        .welcome-icon {
+            width: 54px; height: 54px; border-radius: 17px; display: grid;
+            place-items: center; background: #fff; color: var(--rose); font-size: 1.45rem;
+            box-shadow: 0 5px 18px rgba(75,46,67,.07);
+        }
+        .eyebrow { color: var(--rose); font-weight: 800; font-size: .75rem; letter-spacing: .12em; text-transform: uppercase; }
+        .section-title { color: var(--plum); font-weight: 800; }
+        .soft-card {
+            height: 100%; background: #fff; border: 1px solid var(--border-soft);
+            border-radius: 17px; padding: 18px;
+        }
+        .myth-label { color: #9b506d; font-size: .72rem; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; }
+        .fact-label { color: #397a65; font-size: .72rem; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; }
+        .fact-icon {
+            display: inline-grid; place-items: center; width: 35px; height: 35px;
+            border-radius: 11px; background: var(--pink-soft); color: var(--rose);
+        }
+        .screening-shell {
+            border: 1px solid var(--border-soft); border-radius: 22px; background: #fff;
+            overflow: hidden; box-shadow: 0 12px 34px rgba(75,46,67,.05);
+        }
+        .screening-head { background: #fff4f7; border-bottom: 1px solid var(--border-soft); padding: 22px 25px; }
+        .screening-body { padding: 24px; }
+        .form-section {
+            border: 1px solid var(--border-soft); border-radius: 15px; padding: 18px;
+            margin-bottom: 15px; background: #fff;
+        }
+        .form-section-title { display: flex; align-items: center; gap: 10px; font-weight: 800; margin-bottom: 15px; }
+        .form-section-title .section-icon {
+            display: inline-grid; place-items: center; flex: 0 0 34px; height: 34px;
+            border-radius: 10px; background: var(--pink-soft); color: var(--rose);
+        }
+        .form-label { font-weight: 700; font-size: .88rem; color: var(--plum); }
+        .form-control, .form-select {
+            border-color: #e8dce3; border-radius: 10px; min-height: 43px;
+            font-family: inherit; font-size: .92rem;
+        }
+        .form-control:focus, .form-select:focus {
+            border-color: var(--rose); box-shadow: 0 0 0 .2rem rgba(184,88,122,.13);
+        }
+        .form-text { color: var(--text-muted); font-size: .76rem; }
+        .bmi-result {
+            background: var(--pink-bg); border: 1px dashed #d99bb2; border-radius: 12px; padding: 12px;
+        }
+        .bmi-value { color: var(--rose-dark); font-size: 1.2rem; font-weight: 800; }
+        .disclaimer {
+            background: #fff9e9; border: 1px solid #f0e2b7; color: #6e5b2d;
+            border-radius: 12px; padding: 13px 15px; font-size: .82rem;
+        }
+        .quick-link {
+            display: flex; align-items: center; gap: 12px; text-decoration: none; color: var(--plum);
+            background: #fff; border: 1px solid var(--border-soft); border-radius: 14px; padding: 14px;
+            height: 100%; transition: transform .15s ease, border-color .15s ease;
+        }
+        .quick-link:hover { transform: translateY(-2px); border-color: #d99bb2; color: var(--rose-dark); }
+        .quick-link-icon {
+            flex: 0 0 39px; width: 39px; height: 39px; display: grid; place-items: center;
+            background: var(--pink-soft); color: var(--rose); border-radius: 12px;
+        }
+        .sidebar-link { display: flex; gap: 12px; align-items: center; text-decoration: none; color: var(--plum); padding: 11px 13px; border-radius: 11px; margin-bottom: 5px; font-weight: 600; }
+        .sidebar-link:hover, .sidebar-link.active { background: var(--pink-soft); color: var(--rose-dark); }
+        .sidebar-link i { width: 20px; text-align: center; }
+        footer { background: #264653; color: white; padding: 50px 0 20px; margin-top: 80px; }
+        footer h5 { color: #2a9d8f; font-weight: 700; margin-bottom: 20px; }
+        footer a { color: #a8dadc; text-decoration: none; }
+        footer a:hover { color: white; padding-left: 5px; }
+        footer ul li { margin-bottom: 10px; }
+        @media (max-width: 767px) {
+            .welcome-panel { padding: 21px; }
+            .screening-body { padding: 14px; }
+            .screening-head { padding: 19px; }
+            .form-section { padding: 14px; }
+        }
+    </style>
+</head>
+<body>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        <div class="container page-wrap pt-3">
+            {% for category, message in messages %}
+            <div class="alert alert-{{ category }} alert-dismissible fade show shadow-sm" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+    {% endwith %}
+
+    <nav class="navbar navbar-expand-lg bg-white sticky-top">
+        <div class="container page-wrap">
+            <a class="navbar-brand fw-bold d-flex align-items-center" href="{{ url_for('home') }}">
+                <span class="brand-mark"><i class="fa-solid fa-hand-holding-heart"></i></span>
+                <span style="color:var(--plum)">PCOS</span><span class="ms-1" style="color:var(--rose)">Care</span>
+            </a>
+            <div class="d-flex align-items-center gap-2">
+                <button class="btn btn-outline-rose" type="button" data-bs-toggle="offcanvas" data-bs-target="#menu" aria-controls="menu" aria-label="Open navigation">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
+                <a href="{{ url_for('logout') }}" class="btn btn-rose"><i class="fa-solid fa-right-from-bracket me-sm-1"></i><span class="d-none d-sm-inline">Logout</span></a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="offcanvas offcanvas-start" tabindex="-1" id="menu" aria-labelledby="sidebarTitle">
+        <div class="offcanvas-header border-bottom">
+            <a class="navbar-brand fw-bold d-flex align-items-center" href="{{ url_for('home') }}">
+                <span class="brand-mark"><i class="fa-solid fa-hand-holding-heart"></i></span>
+                <span style="color:var(--plum)">PCOS</span><span class="ms-1" style="color:var(--rose)">Care</span>
+            </a>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+        </div>
+        <div class="offcanvas-body">
+            <div id="sidebarTitle" class="eyebrow mb-3">Your wellness space</div>
+            <a class="sidebar-link active" aria-current="page" href="{{ url_for('home') }}"><i class="fa-solid fa-house"></i> Home</a>
+            <a class="sidebar-link" href="{{ url_for('profile') }}"><i class="fa-solid fa-user"></i> My Profile</a>
+            <a class="sidebar-link" href="{{ url_for('history') }}"><i class="fa-solid fa-clock-rotate-left"></i> Prediction History</a>
+            <a class="sidebar-link" href="{{ url_for('cycle_tracker') }}"><i class="fa-solid fa-calendar-days"></i> Cycle Tracker</a>
+            <a class="sidebar-link" href="{{ url_for('diet_planner') }}"><i class="fa-solid fa-utensils"></i> Diet Planner</a>
+            <a class="sidebar-link" href="{{ url_for('exercise_planner') }}"><i class="fa-solid fa-person-walking"></i> Exercise Planner</a>
+            <a class="sidebar-link" href="{{ url_for('doctor_finder') }}"><i class="fa-solid fa-user-doctor"></i> Doctor Finder</a>
+            <a class="sidebar-link" href="{{ url_for('education') }}"><i class="fa-solid fa-book-open"></i> PCOS Education</a>
+            <a class="sidebar-link" href="{{ url_for('settings') }}"><i class="fa-solid fa-gear"></i> Settings</a>
+            {% if session.get("user_email") in ["syedaasra2407@gmail.com", "khushigupta46576@gmail.com", "ayushikashyap91427@gmail.com"] %}
+            <hr>
+            <a class="sidebar-link" href="{{ url_for('admin') }}"><i class="fa-solid fa-user-shield"></i> Admin Dashboard</a>
+            {% endif %}
+            <div class="mt-4 p-3 rounded-3" style="background:var(--pink-bg)">
+                <div class="fw-bold mb-1"><i class="fa-solid fa-heart me-2" style="color:var(--rose)"></i>Take it one step at a time</div>
+                <small class="text-muted">Your dashboard is a support tool, not a substitute for medical care.</small>
+            </div>
+        </div>
+    </div>
+
+    <main class="container page-wrap py-4 py-md-5">
+        <!-- Compact dashboard welcome -->
+        <section class="welcome-panel mb-4">
+            <div class="d-flex flex-column flex-md-row align-items-md-center justify-content-between gap-3">
+                <div class="d-flex align-items-start gap-3">
+                    <div class="welcome-icon"><i class="fa-solid fa-sparkles"></i></div>
+                    <div>
+                        <div class="eyebrow mb-1">Your personal dashboard</div>
+                        <h1 class="h3 fw-bold mb-1">Welcome{% if session.get('user_name') %}, {{ session.get('user_name') }}{% endif %}.</h1>
+                        <p class="text-muted mb-0">Check in with your health, learn something new, and take your next step at your own pace.</p>
+                    </div>
+                </div>
+                <a href="#form-section" class="btn btn-rose px-4 py-2 flex-shrink-0"><i class="fa-solid fa-clipboard-check me-2"></i>Start screening</a>
+            </div>
+        </section>
+
+        <!-- Myths and facts replace the repeated landing-page introduction -->
+        <section class="mb-5" aria-labelledby="myths-title">
+            <div class="d-flex flex-column flex-sm-row justify-content-between align-items-sm-end gap-2 mb-3">
+                <div>
+                    <div class="eyebrow">Learn & understand</div>
+                    <h2 id="myths-title" class="h4 section-title mb-1">PCOS: Myths vs. Facts</h2>
+                    <p class="text-muted small mb-0">A few reminders to help separate common misconceptions from evidence-based information.</p>
+                </div>
+                <a href="{{ url_for('education') }}" class="small fw-bold text-decoration-none" style="color:var(--rose-dark)">Explore PCOS education <i class="fa-solid fa-arrow-right ms-1"></i></a>
+            </div>
+            <div class="row g-3">
+                <div class="col-md-4">
+                    <article class="soft-card">
+                        <div class="d-flex align-items-center gap-2 mb-3"><span class="fact-icon"><i class="fa-solid fa-scale-balanced"></i></span><span class="myth-label">Myth & fact</span></div>
+                        <p class="mb-2"><span class="fw-bold">Myth:</span> PCOS only affects people who are overweight.</p>
+                        <p class="mb-0 small text-muted"><span class="fact-label">Fact:</span> PCOS can affect people of different body sizes. Weight alone cannot confirm or rule it out.</p>
+                    </article>
+                </div>
+                <div class="col-md-4">
+                    <article class="soft-card">
+                        <div class="d-flex align-items-center gap-2 mb-3"><span class="fact-icon"><i class="fa-solid fa-calendar-check"></i></span><span class="myth-label">Myth & fact</span></div>
+                        <p class="mb-2"><span class="fw-bold">Myth:</span> Irregular periods are the only sign of PCOS.</p>
+                        <p class="mb-0 small text-muted"><span class="fact-label">Fact:</span> Symptoms vary. Some people experience acne or excess hair growth; others may have different symptoms.</p>
+                    </article>
+                </div>
+                <div class="col-md-4">
+                    <article class="soft-card">
+                        <div class="d-flex align-items-center gap-2 mb-3"><span class="fact-icon"><i class="fa-solid fa-baby"></i></span><span class="myth-label">Myth & fact</span></div>
+                        <p class="mb-2"><span class="fw-bold">Myth:</span> PCOS means someone cannot become pregnant.</p>
+                        <p class="mb-0 small text-muted"><span class="fact-label">Fact:</span> PCOS can affect ovulation, but many people with PCOS do become pregnant, sometimes with treatment.</p>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+        <!-- Compact, grouped screening form -->
+        <section id="form-section" class="screening-shell mb-5">
+            <div class="screening-head">
+                <div class="d-flex flex-column flex-sm-row align-items-sm-center justify-content-between gap-2">
+                    <div>
+                        <div class="eyebrow">AI-assisted screening</div>
+                        <h2 class="h4 section-title mb-1"><i class="fa-solid fa-clipboard-list me-2" style="color:var(--rose)"></i>PCOS Risk Screening</h2>
+                        <p class="text-muted small mb-0">Complete the sections below. Fields are grouped to make the form easier to scan.</p>
+                    </div>
+                    <span class="badge rounded-pill px-3 py-2" style="background:#fff;color:var(--rose-dark);border:1px solid var(--border-soft)"><i class="fa-solid fa-lock me-1"></i>Private account</span>
+                </div>
+            </div>
+
+            <div class="screening-body">
+                <form action="{{ url_for('predict') }}" method="POST" id="predictionForm">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+                    <div class="form-section">
+                        <div class="form-section-title"><span class="section-icon"><i class="fa-solid fa-user"></i></span><span>01. Basic details</span></div>
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label for="country" class="form-label">Country</label>
+                                <select name="Country" id="country" class="form-select" required>
+                                    <option value="India" selected>India</option>
+                                    <option value="USA">USA</option>
+                                    <option value="UK">UK</option>
+                                    <option value="Nigeria">Nigeria</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="age" class="form-label">Age (years)</label>
+                                <input type="number" name="Age" id="age" class="form-control" min="10" max="100" placeholder="e.g. 25" required>
+                            </div>
+                            <div class="col-12">
+                                <div class="bmi-result">
+                                    <div class="d-flex align-items-center gap-2 mb-2">
+                                        <i class="fa-solid fa-weight-scale" style="color:var(--rose)"></i>
+                                        <span class="fw-bold">BMI calculator</span>
+                                        <span class="text-muted small">(calculated from height and weight)</span>
+                                    </div>
+                                    <div class="row g-2 align-items-end">
+                                        <div class="col-6 col-md-4">
+                                            <label for="weight" class="form-label">Weight (kg)</label>
+                                            <input type="number" id="weight" class="form-control" min="1" max="500" step="0.1" placeholder="e.g. 60" inputmode="decimal">
+                                        </div>
+                                        <div class="col-6 col-md-4">
+                                            <label for="height" class="form-label">Height (cm)</label>
+                                            <input type="number" id="height" class="form-control" min="50" max="250" step="0.1" placeholder="e.g. 160" inputmode="decimal">
+                                        </div>
+                                        <div class="col-12 col-md-4">
+                                            <label for="bmi_final" class="form-label">BMI result</label>
+                                            <input type="number" name="BMI" id="bmi_final" class="form-control fw-bold" min="10" max="70" step="0.1" placeholder="Enter or calculate BMI" required>
+                                        </div>
+                                    </div>
+                                    <div id="bmiHelp" class="form-text mt-2">Enter your height and weight to calculate BMI, or enter a BMI value directly.</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-section">
+                        <div class="form-section-title"><span class="section-icon"><i class="fa-solid fa-calendar-days"></i></span><span>02. Menstrual health</span></div>
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label for="cycleLength" class="form-label">Cycle length (days)</label>
+                                <input type="number" name="Cycle_Length" id="cycleLength" class="form-control" min="15" max="120" value="28" required>
+                                <div class="form-text">Count from the first day of one period to the first day of the next. If unsure, use your best estimate.</div>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="cycleRegularity" class="form-label">Cycle regularity</label>
+                                <select name="Cycle_Regularity" id="cycleRegularity" class="form-select" required>
+                                    <option value="Regular">Regular</option>
+                                    <option value="Irregular">Irregular</option>
+                                    <option value="Amenorrhea">No periods for 3+ months</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-section">
+                        <div class="form-section-title"><span class="section-icon"><i class="fa-solid fa-heart-pulse"></i></span><span>03. Symptoms & signs</span></div>
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label for="acne" class="form-label">Acne</label>
+                                <select name="Acne" id="acne" class="form-select" required><option value="No">No</option><option value="Yes">Yes</option></select>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="hairThinning" class="form-label">Hair thinning</label>
+                                <select name="Hair_Thinning" id="hairThinning" class="form-select" required><option value="No">No</option><option value="Yes">Yes</option></select>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="skinDarkening" class="form-label">Skin darkening</label>
+                                <select name="Skin_Darkening" id="skinDarkening" class="form-select" required><option value="No">No</option><option value="Yes">Yes</option></select>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="hirsutism" class="form-label">Excess facial/body hair</label>
+                                <select name="Hirsutism_Score" id="hirsutism" class="form-select" required>
+                                    <option value="0">None</option><option value="1">Mild</option><option value="2">Moderate</option><option value="3">Severe</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="hyperandrogenism" class="form-label">High androgen signs or test result?</label>
+                                <select name="Hyperandrogenism" id="hyperandrogenism" class="form-select" required>
+                                    <option value="No">No / Not sure</option><option value="Yes">Yes</option>
+                                </select>
+                                <div class="form-text">Select Yes if a clinician or blood test has indicated elevated androgens, or you have been advised you have related signs.</div>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="weightGain" class="form-label">Rapid weight gain</label>
+                                <select name="Rapid_Weight_Gain" id="weightGain" class="form-select" required><option value="No">No</option><option value="Yes">Yes</option></select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-section">
+                        <div class="form-section-title"><span class="section-icon"><i class="fa-solid fa-leaf"></i></span><span>04. Lifestyle & wellbeing</span></div>
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label for="stress" class="form-label">Perceived stress level</label>
+                                <select name="Stress_Level" id="stress" class="form-select" required><option value="Low">Low</option><option value="Medium" selected>Medium</option><option value="High">High</option></select>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="lifestyle" class="form-label">Lifestyle pattern</label>
+                                <select name="Lifestyle_Score" id="lifestyle" class="form-select" required>
+                                    <option value="Good">Generally active, balanced meals, regular sleep</option>
+                                    <option value="Moderate" selected>Some activity, mixed routine</option>
+                                    <option value="Poor">Mostly inactive or irregular routine</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="disclaimer mb-3">
+                        <i class="fa-solid fa-circle-info me-2"></i>
+                        This tool estimates risk from the information entered. It cannot diagnose PCOS or replace evaluation by a qualified healthcare professional. A clinician may consider symptoms, medical history, blood tests and other causes.
+                    </div>
+
+                    <div class="d-flex flex-column flex-sm-row align-items-sm-center justify-content-between gap-3">
+                        <span class="small text-muted"><i class="fa-solid fa-clock me-1"></i>Review your answers before submitting.</span>
+                        <button type="submit" class="btn btn-rose btn-lg px-4"><i class="fa-solid fa-wand-magic-sparkles me-2"></i>Estimate my risk</button>
+                    </div>
+                </form>
+            </div>
+        </section>
+
+        <!-- Quick links keep the dashboard useful without repeating the landing page -->
+        <section class="mb-4" aria-labelledby="next-steps-title">
+            <div class="eyebrow">Keep going</div>
+            <h2 id="next-steps-title" class="h4 section-title mb-3">Your wellness tools</h2>
+            <div class="row g-3">
+                <div class="col-sm-6 col-lg-3">
+                    <a class="quick-link" href="{{ url_for('cycle_tracker') }}"><span class="quick-link-icon"><i class="fa-solid fa-calendar-days"></i></span><span><span class="fw-bold d-block">Cycle Tracker</span><small class="text-muted">Record your cycle</small></span><i class="fa-solid fa-chevron-right ms-auto small"></i></a>
+                </div>
+                <div class="col-sm-6 col-lg-3">
+                    <a class="quick-link" href="{{ url_for('diet_planner') }}"><span class="quick-link-icon"><i class="fa-solid fa-utensils"></i></span><span><span class="fw-bold d-block">Diet Planner</span><small class="text-muted">Explore meal ideas</small></span><i class="fa-solid fa-chevron-right ms-auto small"></i></a>
+                </div>
+                <div class="col-sm-6 col-lg-3">
+                    <a class="quick-link" href="{{ url_for('exercise_planner') }}"><span class="quick-link-icon"><i class="fa-solid fa-person-walking"></i></span><span><span class="fw-bold d-block">Exercise Planner</span><small class="text-muted">Plan gentle movement</small></span><i class="fa-solid fa-chevron-right ms-auto small"></i></a>
+                </div>
+                <div class="col-sm-6 col-lg-3">
+                    <a class="quick-link" href="{{ url_for('history') }}"><span class="quick-link-icon"><i class="fa-solid fa-chart-line"></i></span><span><span class="fw-bold d-block">My History</span><small class="text-muted">Review past results</small></span><i class="fa-solid fa-chevron-right ms-auto small"></i></a>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4 mb-4">
+                    <h5><i class="fa-solid fa-hand-holding-heart me-2"></i>PCOS Care</h5>
+                    <p class="text-white-50 small">Empowering women through data-driven health insights. We provide professional risk assessment tools to bridge the gap between symptoms and diagnosis.</p>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <h5>Quick Links</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="#"><i class="fa-solid fa-chevron-right me-2 small"></i>Home</a></li>
+                        <li><a href="#form-section"><i class="fa-solid fa-chevron-right me-2 small"></i>Risk Calculator</a></li>
+                        <li><a href="#education"><i class="fa-solid fa-chevron-right me-2 small"></i>Resources</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-4 mb-4">
+                    <h5>Contact Us</h5>
+                    <ul class="list-unstyled text-white-50">
+                        <li><i class="fa-solid fa-location-dot me-2"></i> NSHM Knowledge Campus</li>
+                        <li><i class="fa-solid fa-envelope me-2"></i> support@pcoscare.com</li>
+                        <li><i class="fa-solid fa-phone me-2"></i> +91 98765 43210</li>
+                    </ul>
+                </div>
+            </div>
+            <hr style="border-color: rgba(255,255,255,0.1);">
+            <div class="text-center small text-white-50">
+                © 2026 PCOS Care System. All Rights Reserved.
+            </div>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        const weightInput = document.getElementById('weight');
+        const heightInput = document.getElementById('height');
+        const bmiInput = document.getElementById('bmi_final');
+        const bmiHelp = document.getElementById('bmiHelp');
+
+        function calcBMI() {
+            const weight = Number(weightInput.value);
+            const heightCm = Number(heightInput.value);
+            if (weight > 0 && heightCm > 0) {
+                const heightM = heightCm / 100;
+                const bmi = weight / (heightM * heightM);
+                bmiInput.value = bmi.toFixed(1);
+                bmiHelp.textContent = 'BMI calculated. You can edit the BMI value if needed.';
+            } else {
+                bmiInput.value = '';
+                bmiHelp.textContent = 'Enter your height and weight to calculate BMI, or enter a BMI value directly.';
+            }
+        }
+        weightInput.addEventListener('input', calcBMI);
+        heightInput.addEventListener('input', calcBMI);
+
+        document.getElementById('predictionForm').addEventListener('submit', function (event) {
+            const age = Number(document.getElementById('age').value);
+            const bmi = Number(bmiInput.value);
+            const cycleLength = Number(document.getElementById('cycleLength').value);
+
+            if (age < 10 || age > 100) {
+                event.preventDefault();
+                alert('Please enter an age between 10 and 100 years.');
+                return;
+            }
+            if (!Number.isFinite(bmi) || bmi < 10 || bmi > 70) {
+                event.preventDefault();
+                alert('Please enter or calculate a BMI between 10 and 70.');
+                bmiInput.focus();
+                return;
+            }
+            if (cycleLength < 15 || cycleLength > 120) {
+                event.preventDefault();
+                alert('Please enter a cycle length between 15 and 120 days.');
+            }
+        });
+
+        window.setTimeout(function () {
+            document.querySelectorAll('.alert').forEach(function (alertElement) {
+                if (window.bootstrap) {
+                    bootstrap.Alert.getOrCreateInstance(alertElement).close();
+                }
+            });
+        }, 4500);
+    </script>
+</body>
+</html>

@@ -1,0 +1,266 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Email Sent Successfully | PCOS Care</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+          rel="stylesheet">
+
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&display=swap"
+          rel="stylesheet">
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='theme.css') }}">
+
+    <style>
+        :root {
+            --rose: #b8587a;
+            --plum: #4b2e43;
+            --pink-bg: #fff5f7;
+            --light-rose: #fce8ef;
+            --border: #f0dce5;
+            --muted: #786b75;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            margin: 0;
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: var(--pink-bg);
+            color: var(--plum);
+            font-family: 'Quicksand', sans-serif;
+        }
+
+        .brand {
+            position: absolute;
+            top: 24px;
+            left: 6%;
+            text-decoration: none;
+            font-size: 1.35rem;
+            font-weight: 700;
+            color: var(--plum);
+        }
+
+        .brand i,
+        .brand-accent {
+            color: var(--rose);
+        }
+
+        .success-card {
+            width: 100%;
+            max-width: 540px;
+            padding: 42px 38px;
+            background: #fff;
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            box-shadow: 0 14px 40px rgba(75, 46, 67, 0.08);
+            text-align: center;
+        }
+
+        .success-icon {
+            width: 100px;
+            height: 100px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 24px;
+            border-radius: 50%;
+            background: var(--light-rose);
+            color: var(--rose);
+            font-size: 45px;
+        }
+
+        .success-card h1 {
+            margin-bottom: 14px;
+            color: var(--plum);
+            font-size: clamp(1.55rem, 5vw, 2rem);
+            font-weight: 700;
+        }
+
+        .description {
+            color: var(--muted);
+            line-height: 1.8;
+        }
+
+        .email-box {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin: 22px 0;
+            padding: 15px;
+            overflow-wrap: anywhere;
+            background: var(--pink-bg);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            color: var(--plum);
+            font-weight: 700;
+        }
+
+        .email-box i {
+            flex-shrink: 0;
+            color: var(--rose);
+        }
+
+        .btn-rose {
+            display: inline-block;
+            padding: 12px 28px;
+            border: 1px solid var(--rose);
+            border-radius: 10px;
+            background: var(--rose);
+            color: #fff;
+            font-weight: 700;
+            text-decoration: none;
+            transition: background .2s ease;
+        }
+
+        .btn-rose:hover {
+            border-color: var(--plum);
+            background: var(--plum);
+            color: #fff;
+        }
+
+        .help-note {
+            margin-top: 22px;
+            padding: 14px;
+            border-radius: 12px;
+            background: #fff9e9;
+            color: #705b35;
+            font-size: .9rem;
+            line-height: 1.7;
+            text-align: left;
+        }
+
+        .page-footer {
+            margin-top: 25px;
+            color: var(--muted);
+            font-size: .85rem;
+            text-align: center;
+        }
+
+        @media (max-width: 576px) {
+            body {
+                padding: 18px;
+            }
+
+            .brand {
+                top: 18px;
+                left: 20px;
+            }
+
+            .success-card {
+                padding: 32px 22px;
+                margin-top: 55px;
+            }
+
+            .success-icon {
+                width: 82px;
+                height: 82px;
+                font-size: 36px;
+            }
+
+            .email-box {
+                font-size: .9rem;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            *,
+            *::before,
+            *::after {
+                transition: none !important;
+                scroll-behavior: auto !important;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+    <div class="container mb-3" style="max-width: 540px;">
+        {% for category, message in messages %}
+        <div class="alert alert-{{ category }} alert-dismissible fade show shadow-sm"
+             role="alert">
+            {{ message }}
+            <button type="button" class="btn-close"
+                    data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+    {% endwith %}
+
+    <a class="brand" href="/home" aria-label="PCOS Care home">
+        <i class="fa-solid fa-hand-holding-heart me-2"></i>
+        PCOS<span class="brand-accent"> Care</span>
+    </a>
+
+    <main class="success-card">
+
+        <div class="success-icon" aria-hidden="true">
+            <i class="fa-solid fa-envelope-circle-check"></i>
+        </div>
+
+        <h1>Email Sent Successfully!</h1>
+
+        <p class="description">
+            Your AI Health Report has been sent to the email address below.
+        </p>
+
+        <div class="email-box">
+            <i class="fa-solid fa-envelope"></i>
+            <span>{{ email }}</span>
+        </div>
+
+        <p class="description small">
+            Please check your inbox. If the email doesn't appear, check your spam
+            or junk folder.
+        </p>
+
+        <a href="/home" class="btn-rose mt-2">
+            <i class="fa-solid fa-house me-2"></i>
+            Back to Home
+        </a>
+
+        <div class="help-note">
+            <i class="fa-solid fa-circle-info me-2"></i>
+            <strong>Note:</strong> This confirmation page indicates that your app
+            reached this step. If you do not receive the report, verify the email
+            delivery status and your mail service configuration.
+        </div>
+
+    </main>
+
+    <footer class="page-footer">
+        PCOS Care · Health awareness and wellness support
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        window.setTimeout(function () {
+            document.querySelectorAll(".alert-dismissible").forEach(function (alert) {
+                bootstrap.Alert.getOrCreateInstance(alert).close();
+            });
+        }, 4000);
+    </script>
+
+</body>
+</html>

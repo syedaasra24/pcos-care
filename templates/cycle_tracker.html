@@ -1,0 +1,629 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cycle Tracker | PCOS Care</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='theme.css') }}">
+
+    <style>
+        :root {
+            --rose: #b8587a;
+            --plum: #4b2e43;
+            --pink-bg: #fff5f7;
+            --light-rose: #fce8ef;
+            --muted: #786b75;
+        }
+
+        body {
+            background: var(--pink-bg);
+            color: var(--plum);
+            font-family: 'Quicksand', sans-serif;
+            min-height: 100vh;
+        }
+
+        .navbar {
+            border-bottom: 1px solid #f3dce5;
+        }
+
+        .brand-icon {
+            color: var(--rose);
+        }
+
+        .brand-name {
+            color: var(--plum);
+            font-weight: 700;
+        }
+
+        .brand-accent {
+            color: var(--rose);
+        }
+
+        .btn-rose {
+            background: var(--rose);
+            color: #fff;
+            border: 1px solid var(--rose);
+            font-weight: 700;
+        }
+
+        .btn-rose:hover {
+            background: var(--plum);
+            color: #fff;
+            border-color: var(--plum);
+        }
+
+        .btn-outline-rose {
+            border: 1px solid var(--rose);
+            color: var(--rose);
+            font-weight: 600;
+        }
+
+        .btn-outline-rose:hover {
+            background: var(--rose);
+            color: #fff;
+        }
+
+        .menu-link {
+            color: var(--plum);
+            background: #fff;
+            border: 1px solid #f2e3e9;
+            border-radius: 10px;
+            padding: 11px 14px;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: .2s ease;
+        }
+
+        .menu-link i {
+            color: var(--rose);
+            width: 20px;
+            text-align: center;
+        }
+
+        .menu-link:hover,
+        .menu-link.active {
+            background: var(--light-rose);
+            border-color: #e9b8ca;
+            color: var(--plum);
+        }
+
+        .main {
+            max-width: 1050px;
+            margin: 35px auto;
+            padding: 32px;
+            background: #fff;
+            border: 1px solid #f2e3e9;
+            border-radius: 22px;
+            box-shadow: 0 10px 30px rgba(75, 46, 67, .07);
+        }
+
+        .page-icon {
+            width: 62px;
+            height: 62px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 15px;
+            border-radius: 18px;
+            background: var(--light-rose);
+            color: var(--rose);
+            font-size: 26px;
+        }
+
+        .section-title {
+            color: var(--plum);
+            font-weight: 700;
+        }
+
+        .form-label {
+            color: var(--plum);
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .form-control {
+            border: 1px solid #e7d8e0;
+            border-radius: 10px;
+            padding: 12px 14px;
+            color: var(--plum);
+        }
+
+        .form-control:focus {
+            border-color: var(--rose);
+            box-shadow: 0 0 0 .2rem rgba(184, 88, 122, .13);
+        }
+
+        .cardx {
+            height: 100%;
+            padding: 23px 15px;
+            text-align: center;
+            border-radius: 16px;
+            border: 1px solid #f1dce5;
+            background: #fff9fb;
+            transition: transform .2s ease, box-shadow .2s ease;
+        }
+
+        .cardx:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(75, 46, 67, .07);
+        }
+
+        .card-icon {
+            color: var(--rose);
+            font-size: 23px;
+            margin-bottom: 12px;
+        }
+
+        .cardx h6 {
+            color: var(--muted);
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .cardx h4 {
+            color: var(--plum);
+            font-size: 1.1rem;
+            font-weight: 700;
+            margin-bottom: 0;
+            overflow-wrap: anywhere;
+        }
+
+        .info-panel {
+            border: 1px solid #f0d5e0;
+            background: #fff5f8;
+            color: var(--plum);
+            border-radius: 14px;
+            padding: 18px 20px;
+        }
+
+        .info-panel ul {
+            margin-bottom: 0;
+            padding-left: 22px;
+        }
+
+        .info-panel li {
+            margin-bottom: 7px;
+        }
+
+        .info-panel li:last-child {
+            margin-bottom: 0;
+        }
+
+        .table thead th {
+            background: var(--light-rose);
+            color: var(--plum);
+            white-space: nowrap;
+        }
+
+        .table td {
+            color: #5d4a57;
+            vertical-align: middle;
+        }
+
+        .empty-state {
+            background: #fff8fa;
+            border: 1px dashed #e8c6d4;
+            border-radius: 14px;
+            padding: 25px;
+            text-align: center;
+            color: var(--muted);
+        }
+
+        .empty-state i {
+            color: var(--rose);
+            font-size: 26px;
+            margin-bottom: 10px;
+        }
+
+        .page-footer {
+            color: var(--muted);
+            font-size: .85rem;
+            text-align: center;
+            margin-top: 25px;
+        }
+
+        @media (max-width: 576px) {
+            .main {
+                margin: 18px auto;
+                padding: 20px 15px;
+                border-radius: 16px;
+            }
+
+            .page-title {
+                font-size: 1.55rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+{% if messages %}
+<div class="container mt-3">
+    {% for category, message in messages %}
+    <div class="alert alert-{{ category }} alert-dismissible fade show shadow-sm" role="alert">
+        {{ message }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    {% endfor %}
+</div>
+{% endif %}
+{% endwith %}
+
+<nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm sticky-top">
+    <div class="container">
+        <a class="navbar-brand fw-bold d-flex align-items-center" href="/home">
+            <i class="fa-solid fa-hand-holding-heart brand-icon me-2"></i>
+            <span class="brand-name">PCOS</span>
+            <span class="brand-accent ms-1">Care</span>
+        </a>
+
+        <div class="d-flex align-items-center gap-2">
+            <button class="btn btn-outline-rose" type="button"
+                    data-bs-toggle="offcanvas" data-bs-target="#menu"
+                    aria-controls="menu" aria-label="Open navigation menu">
+                <i class="fa-solid fa-bars"></i>
+            </button>
+            <a href="/logout" class="btn btn-rose">
+                <i class="fa-solid fa-right-from-bracket me-1"></i> Logout
+            </a>
+        </div>
+    </div>
+</nav>
+
+<div class="offcanvas offcanvas-start" tabindex="-1" id="menu" aria-labelledby="menuLabel">
+    <div class="offcanvas-header">
+        <a class="navbar-brand fw-bold d-flex align-items-center" href="/home" id="menuLabel">
+            <i class="fa-solid fa-hand-holding-heart brand-icon me-2"></i>
+            <span class="brand-name">PCOS</span>
+            <span class="brand-accent ms-1">Care</span>
+        </a>
+        <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close menu"></button>
+    </div>
+
+    <div class="offcanvas-body">
+        <a class="menu-link" href="/home">
+            <i class="fa-solid fa-house"></i> Home
+        </a>
+        <a class="menu-link" href="/profile">
+            <i class="fa-solid fa-user"></i> My Profile
+        </a>
+        <a class="menu-link" href="/settings">
+            <i class="fa-solid fa-gear"></i> Settings
+        </a>
+        <a class="menu-link" href="/history">
+            <i class="fa-solid fa-chart-line"></i> Prediction History
+        </a>
+        <a class="menu-link active" href="/cycle_tracker" aria-current="page">
+            <i class="fa-solid fa-calendar-days"></i> Cycle Tracker
+        </a>
+        <a class="menu-link" href="/diet_planner">
+            <i class="fa-solid fa-utensils"></i> Diet Planner
+        </a>
+        <a class="menu-link" href="/exercise_planner">
+            <i class="fa-solid fa-dumbbell"></i> Exercise Planner
+        </a>
+        <a class="menu-link" href="/doctor_finder">
+            <i class="fa-solid fa-user-doctor"></i> Doctor Finder
+        </a>
+        <a class="menu-link" href="/education">
+            <i class="fa-solid fa-book-open"></i> PCOS Education
+        </a>
+
+        {% if session.get("user_email") in [
+            "syedaasra2407@gmail.com",
+            "khushigupta46576@gmail.com",
+            "ayushikashyap91427@gmail.com"
+        ] %}
+        <a class="menu-link" href="/admin">
+            <i class="fa-solid fa-user-shield"></i> Admin Dashboard
+        </a>
+        {% endif %}
+    </div>
+</div>
+
+<main class="container">
+    <div class="main">
+
+        <header class="text-center mb-4">
+            <div class="page-icon">
+                <i class="fa-solid fa-calendar-days"></i>
+            </div>
+            <h1 class="page-title section-title">Menstrual Cycle Tracker</h1>
+            <p class="text-muted mb-0">
+                Record your cycle and view estimated dates for your next period and fertile window.
+            </p>
+        </header>
+
+        <section aria-labelledby="cycle-form-title">
+            <h2 id="cycle-form-title" class="section-title fs-5 mb-3">
+                <i class="fa-solid fa-pen-to-square me-2" style="color:#b8587a;"></i>
+                Enter Your Cycle Details
+            </h2>
+
+            <form action="/save_cycle" method="POST" id="cycleForm">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label for="period_start" class="form-label">First Day of Last Period</label>
+                        <input
+                            id="period_start"
+                            name="period_start"
+                            type="date"
+                            class="form-control"
+                            required
+                        >
+                        <div class="form-text">Choose the first day of your most recent period.</div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label for="cycle_length" class="form-label">Typical Cycle Length (days)</label>
+                        <input
+                            id="cycle_length"
+                            name="cycle_length"
+                            type="number"
+                            value="28"
+                            min="1"
+                            max="90"
+                            class="form-control"
+                            required
+                        >
+                        <div class="form-text">Enter your usual cycle length if you know it.</div>
+                    </div>
+                </div>
+
+                <div id="formError" class="text-danger small mt-3" role="alert" hidden></div>
+
+                <div class="text-center mt-4">
+                    <button type="button" class="btn btn-outline-rose px-4 me-2" id="calculateBtn">
+                        <i class="fa-solid fa-calculator me-2"></i>Calculate Dates
+                    </button>
+                    <button type="submit" class="btn btn-rose px-4">
+                        <i class="fa-solid fa-floppy-disk me-2"></i>Save Cycle
+                    </button>
+                </div>
+            </form>
+        </section>
+
+        <hr class="my-4">
+
+        <section aria-labelledby="estimates-title">
+            <h2 id="estimates-title" class="section-title fs-5 mb-3">
+                <i class="fa-solid fa-calendar-check me-2" style="color:#b8587a;"></i>
+                Your Estimated Dates
+            </h2>
+
+            <div class="row g-3">
+                <div class="col-md-4">
+                    <div class="cardx">
+                        <div class="card-icon"><i class="fa-solid fa-calendar-day"></i></div>
+                        <h6>Next Period</h6>
+                        <h4 id="next" aria-live="polite">--</h4>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="cardx">
+                        <div class="card-icon"><i class="fa-solid fa-egg"></i></div>
+                        <h6>Estimated Ovulation</h6>
+                        <h4 id="ovu" aria-live="polite">--</h4>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="cardx">
+                        <div class="card-icon"><i class="fa-solid fa-heart"></i></div>
+                        <h6>Estimated Fertile Window</h6>
+                        <h4 id="fert" aria-live="polite">--</h4>
+                    </div>
+                </div>
+            </div>
+
+            <p class="text-muted small mt-3 mb-0">
+                <i class="fa-solid fa-circle-info me-1"></i>
+                These dates are estimates based on the cycle length entered. Ovulation and fertile-window
+                timing can vary, particularly with PCOS or irregular cycles. This tracker is not a
+                contraceptive method or a diagnostic tool.
+            </p>
+        </section>
+
+        <div class="info-panel mt-4">
+            <h2 class="section-title fs-6 mb-3">
+                <i class="fa-solid fa-heart-pulse me-2"></i>Helpful Wellness Reminders
+            </h2>
+            <ul>
+                <li>Record the first day of each period to build a useful cycle history.</li>
+                <li>Maintain a balanced diet and choose physical activity that suits your needs.</li>
+                <li>Note changes in cycle timing and symptoms.</li>
+                <li>Consult a healthcare professional if periods are persistently irregular or you have concerns.</li>
+            </ul>
+        </div>
+
+        <hr class="my-5">
+
+        <section aria-labelledby="history-title">
+            <h2 id="history-title" class="section-title fs-5 mb-3">
+                <i class="fa-solid fa-clock-rotate-left me-2" style="color:#b8587a;"></i>
+                Previous Cycle History
+            </h2>
+
+            {% if history %}
+            <div class="table-responsive">
+                <table class="table table-bordered table-hover align-middle">
+                    <thead>
+                        <tr>
+                            <th scope="col">Last Period</th>
+                            <th scope="col">Cycle Length</th>
+                            <th scope="col">Next Period</th>
+                            <th scope="col">Saved On</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for row in history %}
+                        <tr>
+                            <td>{{ row.period_start }}</td>
+                            <td>{{ row.cycle_length }} days</td>
+                            <td>{{ row.next_period }}</td>
+                            <td>{{ row.created_at }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <div class="empty-state">
+                <i class="fa-regular fa-calendar"></i>
+                <p class="fw-bold mb-1">No cycle history yet</p>
+                <p class="mb-0">Save your cycle details to start building your history.</p>
+            </div>
+            {% endif %}
+        </section>
+
+        <div class="d-flex flex-wrap justify-content-center gap-2 mt-4">
+            <a href="/home" class="btn btn-outline-rose px-4">
+                <i class="fa-solid fa-house me-2"></i>Home
+            </a>
+            <a href="/history" class="btn btn-rose px-4">
+                <i class="fa-solid fa-clock-rotate-left me-2"></i>Prediction History
+            </a>
+        </div>
+
+        <footer class="page-footer">
+            PCOS Care provides wellness support and estimates, not a medical diagnosis.
+        </footer>
+    </div>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+(function () {
+    const startInput = document.getElementById('period_start');
+    const lengthInput = document.getElementById('cycle_length');
+    const nextOutput = document.getElementById('next');
+    const ovulationOutput = document.getElementById('ovu');
+    const fertileOutput = document.getElementById('fert');
+    const errorOutput = document.getElementById('formError');
+    const calculateBtn = document.getElementById('calculateBtn');
+    const cycleForm = document.getElementById('cycleForm');
+
+    // Use local calendar dates to avoid UTC date shifts from new Date("YYYY-MM-DD").
+    function parseLocalDate(value) {
+        if (!value) return null;
+
+        const parts = value.split('-').map(Number);
+        if (parts.length !== 3 || parts.some(Number.isNaN)) return null;
+
+        const date = new Date(parts[0], parts[1] - 1, parts[2]);
+        if (
+            date.getFullYear() !== parts[0] ||
+            date.getMonth() !== parts[1] - 1 ||
+            date.getDate() !== parts[2]
+        ) {
+            return null;
+        }
+
+        date.setHours(12, 0, 0, 0);
+        return date;
+    }
+
+    function addDays(date, days) {
+        const result = new Date(date);
+        result.setDate(result.getDate() + days);
+        return result;
+    }
+
+    function formatDate(date) {
+        return date.toLocaleDateString(undefined, {
+            day: 'numeric',
+            month: 'short',
+            year: 'numeric'
+        });
+    }
+
+    function showError(message) {
+        errorOutput.textContent = message;
+        errorOutput.hidden = false;
+    }
+
+    function clearError() {
+        errorOutput.textContent = '';
+        errorOutput.hidden = true;
+    }
+
+    function calculate() {
+        clearError();
+
+        const start = parseLocalDate(startInput.value);
+        const cycleLength = Number(lengthInput.value);
+
+        if (!start) {
+            showError('Please select a valid first day of your last period.');
+            return false;
+        }
+
+        if (!Number.isInteger(cycleLength) || cycleLength < 1 || cycleLength > 90) {
+            showError('Please enter a cycle length between 1 and 90 days.');
+            return false;
+        }
+
+        const today = new Date();
+        today.setHours(23, 59, 59, 999);
+
+        if (start > today) {
+            showError('The first day of your last period cannot be in the future.');
+            return false;
+        }
+
+        const nextPeriod = addDays(start, cycleLength);
+        const ovulation = addDays(nextPeriod, -14);
+        const fertileStart = addDays(ovulation, -5);
+        const fertileEnd = addDays(ovulation, 1);
+
+        nextOutput.textContent = formatDate(nextPeriod);
+        ovulationOutput.textContent = formatDate(ovulation);
+        fertileOutput.textContent =
+            formatDate(fertileStart) + ' – ' + formatDate(fertileEnd);
+
+        return true;
+    }
+
+    calculateBtn.addEventListener('click', calculate);
+
+    startInput.addEventListener('change', function () {
+        if (startInput.value && lengthInput.value) calculate();
+    });
+
+    lengthInput.addEventListener('input', function () {
+        if (startInput.value && lengthInput.value) calculate();
+    });
+
+    cycleForm.addEventListener('submit', function (event) {
+        if (!calculate()) {
+            event.preventDefault();
+        }
+    });
+
+    document.querySelectorAll('.alert-dismissible').forEach(function (alert) {
+        window.setTimeout(function () {
+            if (document.body.contains(alert)) {
+                bootstrap.Alert.getOrCreateInstance(alert).close();
+            }
+        }, 4000);
+    });
+})();
+</script>
+
+</body>
+</html>

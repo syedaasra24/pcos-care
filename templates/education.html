@@ -1,0 +1,1039 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>PCOS Education Hub | PCOS Care</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='theme.css') }}">
+
+    <style>
+        :root {
+            --rose: #b8587a;
+            --plum: #4b2e43;
+            --pink-bg: #fff5f7;
+            --light-rose: #fce8ef;
+            --muted: #786b75;
+            --border: #f0dce5;
+        }
+
+        body {
+            background: var(--pink-bg);
+            color: var(--plum);
+            font-family: 'Quicksand', sans-serif;
+            min-height: 100vh;
+        }
+
+        .navbar {
+            border-bottom: 1px solid var(--border);
+        }
+
+        .brand-icon,
+        .brand-accent {
+            color: var(--rose);
+        }
+
+        .brand-name {
+            color: var(--plum);
+            font-weight: 700;
+        }
+
+        .btn-rose {
+            background: var(--rose);
+            border: 1px solid var(--rose);
+            color: #fff;
+            font-weight: 700;
+        }
+
+        .btn-rose:hover {
+            background: var(--plum);
+            border-color: var(--plum);
+            color: #fff;
+        }
+
+        .btn-outline-rose {
+            color: var(--rose);
+            border: 1px solid var(--rose);
+            font-weight: 600;
+        }
+
+        .btn-outline-rose:hover {
+            background: var(--rose);
+            color: #fff;
+        }
+
+        .menu-link {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 11px 14px;
+            margin-bottom: 8px;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            background: #fff;
+            color: var(--plum);
+            text-decoration: none;
+            font-weight: 600;
+            transition: .2s ease;
+        }
+
+        .menu-link i {
+            width: 20px;
+            text-align: center;
+            color: var(--rose);
+        }
+
+        .menu-link:hover,
+        .menu-link.active {
+            background: var(--light-rose);
+            border-color: #e9b8ca;
+            color: var(--plum);
+        }
+
+        .page-header {
+            padding: 15px 0 30px;
+            text-align: center;
+        }
+
+        .page-icon {
+            width: 68px;
+            height: 68px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 16px;
+            border-radius: 20px;
+            background: var(--light-rose);
+            color: var(--rose);
+            font-size: 28px;
+        }
+
+        .page-title,
+        .section-title {
+            color: var(--plum);
+            font-weight: 700;
+        }
+
+        .section-heading {
+            margin: 42px 0 18px;
+        }
+
+        .section-heading p {
+            color: var(--muted);
+            margin-bottom: 0;
+        }
+
+        .info-card {
+            height: 100%;
+            padding: 24px;
+            background: #fff;
+            border: 1px solid var(--border);
+            border-radius: 18px;
+            box-shadow: 0 7px 22px rgba(75, 46, 67, .045);
+            transition: transform .2s ease, box-shadow .2s ease;
+        }
+
+        .info-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 28px rgba(75, 46, 67, .08);
+        }
+
+        .info-icon {
+            width: 48px;
+            height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 16px;
+            border-radius: 14px;
+            background: var(--light-rose);
+            color: var(--rose);
+            font-size: 21px;
+        }
+
+        .info-card h3 {
+            color: var(--plum);
+            font-size: 1.12rem;
+            font-weight: 700;
+            margin-bottom: 12px;
+        }
+
+        .info-card p,
+        .info-card li {
+            color: #655563;
+            line-height: 1.75;
+        }
+
+        .info-card ul {
+            padding-left: 20px;
+            margin-bottom: 0;
+        }
+
+        .info-card li {
+            margin-bottom: 7px;
+        }
+
+        .info-card li:last-child {
+            margin-bottom: 0;
+        }
+
+        .hero-note {
+            padding: 23px;
+            border: 1px solid #efcbd9;
+            border-radius: 18px;
+            background: var(--light-rose);
+        }
+
+        .hero-note h2 {
+            color: var(--plum);
+            font-size: 1.15rem;
+            font-weight: 700;
+        }
+
+        .hero-note p {
+            color: #655563;
+            line-height: 1.8;
+            margin-bottom: 0;
+        }
+
+        .notice-panel {
+            padding: 22px;
+            border: 1px solid #ead6a6;
+            border-radius: 15px;
+            background: #fff9e9;
+            color: #624c24;
+        }
+
+        .notice-panel h2 {
+            font-size: 1.05rem;
+            font-weight: 700;
+        }
+
+        .accordion-item {
+            border: 1px solid var(--border);
+            margin-bottom: 10px;
+            border-radius: 12px !important;
+            overflow: hidden;
+        }
+
+        .accordion-button {
+            color: var(--plum);
+            font-weight: 700;
+            background: #fff;
+            box-shadow: none;
+        }
+
+        .accordion-button:not(.collapsed) {
+            color: var(--plum);
+            background: var(--light-rose);
+            box-shadow: none;
+        }
+
+        .accordion-button:focus {
+            border-color: var(--rose);
+            box-shadow: 0 0 0 .2rem rgba(184, 88, 122, .12);
+        }
+
+        .accordion-body {
+            color: #655563;
+            line-height: 1.8;
+            background: #fff;
+        }
+
+        .reference-link {
+            color: var(--rose);
+            font-weight: 700;
+            text-decoration: none;
+        }
+
+        .reference-link:hover {
+            color: var(--plum);
+            text-decoration: underline;
+        }
+
+        .reference-list li {
+            margin-bottom: 14px;
+            color: #655563;
+            line-height: 1.7;
+        }
+
+        .checklist {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .checklist li {
+            display: flex;
+            gap: 10px;
+            align-items: flex-start;
+            margin-bottom: 12px;
+        }
+
+        .checklist i {
+            color: var(--rose);
+            margin-top: 5px;
+        }
+
+        .page-footer {
+            margin: 30px 0 10px;
+            color: var(--muted);
+            font-size: .85rem;
+            line-height: 1.7;
+            text-align: center;
+        }
+
+        @media (max-width: 576px) {
+            .page-title {
+                font-size: 1.65rem;
+            }
+
+            .info-card {
+                padding: 20px;
+            }
+
+            .hero-note {
+                padding: 19px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+{% if messages %}
+<div class="container mt-3">
+    {% for category, message in messages %}
+    <div class="alert alert-{{ category }} alert-dismissible fade show shadow-sm" role="alert">
+        {{ message }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    {% endfor %}
+</div>
+{% endif %}
+{% endwith %}
+
+<nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm sticky-top">
+    <div class="container">
+        <a class="navbar-brand fw-bold d-flex align-items-center" href="/home">
+            <i class="fa-solid fa-hand-holding-heart brand-icon me-2"></i>
+            <span class="brand-name">PCOS</span>
+            <span class="brand-accent ms-1">Care</span>
+        </a>
+
+        <div class="d-flex align-items-center gap-2">
+            <button
+                type="button"
+                class="btn btn-outline-rose"
+                data-bs-toggle="offcanvas"
+                data-bs-target="#menu"
+                aria-controls="menu"
+                aria-label="Open navigation menu">
+                <i class="fa-solid fa-bars"></i>
+            </button>
+
+            <a href="/logout" class="btn btn-rose">
+                <i class="fa-solid fa-right-from-bracket me-1"></i>
+                Logout
+            </a>
+        </div>
+    </div>
+</nav>
+
+<!-- Sidebar navigation -->
+<div class="offcanvas offcanvas-start" tabindex="-1" id="menu" aria-labelledby="menuLabel">
+    <div class="offcanvas-header">
+        <a class="navbar-brand fw-bold d-flex align-items-center" href="/home" id="menuLabel">
+            <i class="fa-solid fa-hand-holding-heart brand-icon me-2"></i>
+            <span class="brand-name">PCOS</span>
+            <span class="brand-accent ms-1">Care</span>
+        </a>
+
+        <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close menu"></button>
+    </div>
+
+    <div class="offcanvas-body">
+        <a class="menu-link" href="/home">
+            <i class="fa-solid fa-house"></i> Home
+        </a>
+
+        <a class="menu-link" href="/profile">
+            <i class="fa-solid fa-user"></i> My Profile
+        </a>
+
+        <a class="menu-link" href="/settings">
+            <i class="fa-solid fa-gear"></i> Settings
+        </a>
+
+        <a class="menu-link" href="/history">
+            <i class="fa-solid fa-chart-line"></i> Prediction History
+        </a>
+
+        <a class="menu-link" href="/cycle_tracker">
+            <i class="fa-solid fa-calendar-days"></i> Cycle Tracker
+        </a>
+
+        <a class="menu-link" href="/diet_planner">
+            <i class="fa-solid fa-utensils"></i> Diet Planner
+        </a>
+
+        <a class="menu-link" href="/exercise_planner">
+            <i class="fa-solid fa-dumbbell"></i> Exercise Planner
+        </a>
+
+        <a class="menu-link" href="/doctor_finder">
+            <i class="fa-solid fa-user-doctor"></i> Doctor Finder
+        </a>
+
+        <a class="menu-link active" href="/education" aria-current="page">
+            <i class="fa-solid fa-book-medical"></i> PCOS Education
+        </a>
+
+        {% if session.get("user_email") in [
+            "syedaasra2407@gmail.com",
+            "khushigupta46576@gmail.com",
+            "ayushikashyap91427@gmail.com"
+        ] %}
+        <a class="menu-link" href="/admin">
+            <i class="fa-solid fa-user-shield"></i> Admin Dashboard
+        </a>
+        {% endif %}
+    </div>
+</div>
+
+<main class="container py-4 py-md-5">
+
+    <header class="page-header">
+        <div class="page-icon">
+            <i class="fa-solid fa-book-medical"></i>
+        </div>
+
+        <h1 class="page-title">PCOS Education Hub</h1>
+
+        <p class="text-muted mt-2 mb-0">
+            Understand PCOS, learn what to monitor, and explore evidence-based care.
+        </p>
+    </header>
+
+    <section class="hero-note" aria-labelledby="intro-title">
+        <h2 id="intro-title">
+            <i class="fa-solid fa-heart-pulse me-2"></i>
+            First, remember this
+        </h2>
+
+        <p>
+            Polycystic ovary syndrome (PCOS) is a common hormonal condition that can affect
+            menstrual cycles, skin, hair growth, fertility and metabolic health. Symptoms
+            vary widely. PCOS is manageable, and having it is not your fault. A healthcare
+            professional can help you understand your symptoms and choose appropriate care.
+        </p>
+    </section>
+
+    <!-- Understanding PCOS -->
+    <div class="section-heading">
+        <h2 class="section-title fs-4">Understanding PCOS</h2>
+        <p>The essentials everyone should know.</p>
+    </div>
+
+    <div class="row g-4">
+
+        <div class="col-md-6">
+            <article class="info-card">
+                <div class="info-icon">
+                    <i class="fa-solid fa-circle-info"></i>
+                </div>
+
+                <h3>What is PCOS?</h3>
+
+                <p>
+                    PCOS is a hormonal condition associated with irregular ovulation and
+                    higher androgen levels in some people. It may also be associated with
+                    insulin resistance and increased risk of certain metabolic conditions.
+                    It can affect reproductive health and overall well-being.
+                </p>
+
+                <p class="mb-0">
+                    Despite its name, ovarian cysts are not required for a PCOS diagnosis.
+                </p>
+            </article>
+        </div>
+
+        <div class="col-md-6">
+            <article class="info-card">
+                <div class="info-icon">
+                    <i class="fa-solid fa-list-check"></i>
+                </div>
+
+                <h3>Common Signs and Symptoms</h3>
+
+                <ul>
+                    <li>Irregular, infrequent or absent periods.</li>
+                    <li>Excess facial or body hair.</li>
+                    <li>Persistent acne or oily skin.</li>
+                    <li>Thinning hair on the scalp.</li>
+                    <li>Difficulty ovulating or becoming pregnant.</li>
+                    <li>Weight changes or difficulty managing weight in some people.</li>
+                </ul>
+
+                <p class="mt-3 mb-0">
+                    Not everyone experiences all these symptoms. Similar symptoms can also
+                    have other causes.
+                </p>
+            </article>
+        </div>
+
+        <div class="col-md-6">
+            <article class="info-card">
+                <div class="info-icon">
+                    <i class="fa-solid fa-dna"></i>
+                </div>
+
+                <h3>Causes and Contributing Factors</h3>
+
+                <ul>
+                    <li>The exact cause of PCOS is not fully understood.</li>
+                    <li>Family history and genetic factors may contribute.</li>
+                    <li>Hormonal changes, including higher androgen levels, are involved.</li>
+                    <li>Insulin resistance is common in PCOS and may contribute to hormonal changes.</li>
+                </ul>
+
+                <p class="mt-3 mb-0">
+                    PCOS can affect people at different body sizes. It is not simply caused
+                    by eating certain foods or by a lack of exercise.
+                </p>
+            </article>
+        </div>
+
+        <div class="col-md-6">
+            <article class="info-card">
+                <div class="info-icon">
+                    <i class="fa-solid fa-stethoscope"></i>
+                </div>
+
+                <h3>How Is PCOS Diagnosed?</h3>
+
+                <p>
+                    There is no single test that confirms PCOS in every adult. Clinicians
+                    assess symptoms and medical history and may use examinations, blood
+                    tests and, when appropriate, ultrasound.
+                </p>
+
+                <p class="mb-0">
+                    In adults, diagnosis generally requires at least two of three features:
+                    signs of androgen excess, irregular ovulation or periods, and polycystic
+                    ovarian appearance on ultrasound, after other causes are considered.
+                    An ultrasound is not always necessary.
+                </p>
+            </article>
+        </div>
+
+    </div>
+
+    <!-- Health and lifestyle -->
+    <div class="section-heading">
+        <h2 class="section-title fs-4">Everyday Health and Lifestyle</h2>
+        <p>Practical habits that support general health without unrealistic restrictions.</p>
+    </div>
+
+    <div class="row g-4">
+
+        <div class="col-md-6">
+            <article class="info-card">
+                <div class="info-icon">
+                    <i class="fa-solid fa-bowl-food"></i>
+                </div>
+
+                <h3>Balanced Eating</h3>
+
+                <p>A sustainable eating pattern may include:</p>
+
+                <ul>
+                    <li>Vegetables and a variety of whole fruits.</li>
+                    <li>Whole grains such as oats, whole-wheat roti and millets.</li>
+                    <li>Protein sources such as dal, beans, eggs, fish, tofu or lean meat.</li>
+                    <li>Nuts, seeds and suitable sources of unsaturated fats.</li>
+                    <li>Water and regular meals that fit your needs and preferences.</li>
+                </ul>
+
+                <p class="mt-3 mb-0">
+                    There is no single diet proven best for everyone with PCOS. Avoid
+                    unnecessary food bans or extreme diets. A registered dietitian can
+                    help with individual needs.
+                </p>
+            </article>
+        </div>
+
+        <div class="col-md-6">
+            <article class="info-card">
+                <div class="info-icon">
+                    <i class="fa-solid fa-person-walking"></i>
+                </div>
+
+                <h3>Physical Activity</h3>
+
+                <p>Choose activities you can enjoy and maintain, such as:</p>
+
+                <ul>
+                    <li>Brisk walking or other aerobic activity.</li>
+                    <li>Cycling, swimming or dancing.</li>
+                    <li>Strength training suited to your ability.</li>
+                    <li>Yoga, stretching or other movement you enjoy.</li>
+                </ul>
+
+                <p class="mt-3 mb-0">
+                    Regular movement can support metabolic health, mood and general
+                    well-being. Benefits can occur even without weight loss. Start at
+                    a comfortable level and build gradually.
+                </p>
+            </article>
+        </div>
+
+        <div class="col-md-6">
+            <article class="info-card">
+                <div class="info-icon">
+                    <i class="fa-solid fa-moon"></i>
+                </div>
+
+                <h3>Sleep and Emotional Well-being</h3>
+
+                <ul>
+                    <li>Keep a consistent sleep and wake schedule where possible.</li>
+                    <li>Make time for rest and activities that help manage stress.</li>
+                    <li>Seek support if anxiety, low mood or body-image concerns affect daily life.</li>
+                    <li>Tell your clinician if you have persistent sleep problems or significant daytime tiredness.</li>
+                </ul>
+
+                <p class="mt-3 mb-0">
+                    Emotional well-being is an important part of PCOS care, not an afterthought.
+                </p>
+            </article>
+        </div>
+
+        <div class="col-md-6">
+            <article class="info-card">
+                <div class="info-icon">
+                    <i class="fa-solid fa-calendar-check"></i>
+                </div>
+
+                <h3>Cycle Tracking</h3>
+
+                <ul>
+                    <li>Record the first day of each period.</li>
+                    <li>Note how long bleeding lasts and whether it is unusually heavy.</li>
+                    <li>Track symptoms such as pain, acne or changes in hair growth.</li>
+                    <li>Share your records with a healthcare professional when needed.</li>
+                </ul>
+
+                <p class="mt-3 mb-0">
+                    Cycle apps estimate dates; they cannot confirm ovulation. With irregular
+                    cycles, predictions may be especially inaccurate.
+                </p>
+
+                <a href="/cycle_tracker" class="btn btn-outline-rose mt-3">
+                    <i class="fa-solid fa-calendar-days me-2"></i>
+                    Open Cycle Tracker
+                </a>
+            </article>
+        </div>
+
+    </div>
+
+    <!-- Treatment and health monitoring -->
+    <div class="section-heading">
+        <h2 class="section-title fs-4">Treatment and Long-term Health</h2>
+        <p>Care is individual. A clinician can help decide what is appropriate for you.</p>
+    </div>
+
+    <div class="row g-4">
+
+        <div class="col-md-6">
+            <article class="info-card">
+                <div class="info-icon">
+                    <i class="fa-solid fa-prescription-bottle-medical"></i>
+                </div>
+
+                <h3>Treatment Options</h3>
+
+                <p>Treatment depends on symptoms, health history and whether pregnancy is desired.</p>
+
+                <ul>
+                    <li>Personalized lifestyle support for general and metabolic health.</li>
+                    <li>Hormonal medicines may help manage irregular periods or androgen-related symptoms.</li>
+                    <li>Metformin may be considered for selected metabolic indications.</li>
+                    <li>Specific medicines and treatments can be used to support ovulation when pregnancy is desired.</li>
+                    <li>Skin and hair symptoms may need their own treatment.</li>
+                </ul>
+
+                <p class="mt-3 mb-0">
+                    Medicines have different benefits, risks and restrictions. Do not start,
+                    stop or change medication or supplements without appropriate medical advice.
+                </p>
+            </article>
+        </div>
+
+        <div class="col-md-6">
+            <article class="info-card">
+                <div class="info-icon">
+                    <i class="fa-solid fa-heart-pulse"></i>
+                </div>
+
+                <h3>Health Checks to Discuss</h3>
+
+                <p>Depending on your history and clinical needs, a healthcare professional may discuss:</p>
+
+                <ul>
+                    <li>Blood glucose testing for diabetes risk.</li>
+                    <li>Blood pressure and cholesterol assessment.</li>
+                    <li>Menstrual patterns and protection of the uterine lining when periods are very infrequent.</li>
+                    <li>Sleep, mood and emotional well-being.</li>
+                    <li>Fertility goals and pregnancy planning, if relevant.</li>
+                </ul>
+
+                <p class="mt-3 mb-0">
+                    PCOS is associated with increased risks of some metabolic conditions.
+                    Regular, individualized follow-up can help identify concerns early.
+                </p>
+            </article>
+        </div>
+
+    </div>
+
+    <!-- Myths and facts -->
+    <div class="section-heading">
+        <h2 class="section-title fs-4">PCOS: Myths vs Facts</h2>
+        <p>Clear up some common misunderstandings.</p>
+    </div>
+
+    <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
+        <div class="table-responsive">
+            <table class="table table-bordered align-middle mb-0">
+                <thead>
+                    <tr>
+                        <th scope="col" class="p-3">Myth</th>
+                        <th scope="col" class="p-3">Fact</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    <tr>
+                        <td class="p-3">Everyone with PCOS has ovarian cysts.</td>
+                        <td class="p-3">No. Ovarian cysts are not required for diagnosis.</td>
+                    </tr>
+
+                    <tr>
+                        <td class="p-3">Only people with excess body weight get PCOS.</td>
+                        <td class="p-3">PCOS can affect people at any body size.</td>
+                    </tr>
+
+                    <tr>
+                        <td class="p-3">PCOS always causes infertility.</td>
+                        <td class="p-3">PCOS can affect ovulation, but many people with PCOS become pregnant, sometimes with treatment.</td>
+                    </tr>
+
+                    <tr>
+                        <td class="p-3">A special diet can cure PCOS.</td>
+                        <td class="p-3">No diet has been established as a universal cure. Sustainable habits can support health and symptom management.</td>
+                    </tr>
+
+                    <tr>
+                        <td class="p-3">An irregular period automatically means PCOS.</td>
+                        <td class="p-3">Other conditions can cause irregular periods. A healthcare professional can assess the cause.</td>
+                    </tr>
+
+                    <tr>
+                        <td class="p-3">PCOS is only about reproductive health.</td>
+                        <td class="p-3">It can also relate to metabolic health, sleep and emotional well-being.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- When to seek help -->
+    <div class="section-heading">
+        <h2 class="section-title fs-4">When Should You Seek Medical Advice?</h2>
+    </div>
+
+    <div class="notice-panel">
+        <h2>
+            <i class="fa-solid fa-triangle-exclamation me-2"></i>
+            Do not ignore these signs
+        </h2>
+
+        <ul class="mb-0">
+            <li>Your periods are persistently irregular, or you go around three months without a period and pregnancy is not the explanation.</li>
+            <li>You develop new or rapidly worsening facial hair, scalp hair loss or severe acne.</li>
+            <li>You are trying to conceive and have irregular or absent periods.</li>
+            <li>You have persistent concerns about blood sugar, blood pressure, sleep or mood.</li>
+        </ul>
+
+        <hr>
+
+        <p class="mb-0">
+            <strong>Seek urgent medical care</strong> for very heavy bleeding accompanied by
+            dizziness or fainting, severe or sudden pelvic pain, or other severe symptoms.
+            If pregnancy is possible and you have severe pain or bleeding, seek urgent assessment.
+        </p>
+    </div>
+
+    <!-- FAQs -->
+    <div class="section-heading">
+        <h2 class="section-title fs-4">Frequently Asked Questions</h2>
+        <p>Short answers to common questions about PCOS.</p>
+    </div>
+
+    <div class="accordion" id="pcosFaq">
+
+        <div class="accordion-item">
+            <h3 class="accordion-header" id="faqHeading1">
+                <button class="accordion-button" type="button"
+                        data-bs-toggle="collapse" data-bs-target="#faq1"
+                        aria-expanded="true" aria-controls="faq1">
+                    Can PCOS be cured?
+                </button>
+            </h3>
+
+            <div id="faq1" class="accordion-collapse collapse show"
+                 aria-labelledby="faqHeading1" data-bs-parent="#pcosFaq">
+                <div class="accordion-body">
+                    There is currently no established permanent cure, but symptoms and
+                    related health risks can often be managed with individualized treatment
+                    and ongoing care.
+                </div>
+            </div>
+        </div>
+
+        <div class="accordion-item">
+            <h3 class="accordion-header" id="faqHeading2">
+                <button class="accordion-button collapsed" type="button"
+                        data-bs-toggle="collapse" data-bs-target="#faq2"
+                        aria-expanded="false" aria-controls="faq2">
+                    Does having PCOS mean I cannot get pregnant?
+                </button>
+            </h3>
+
+            <div id="faq2" class="accordion-collapse collapse"
+                 aria-labelledby="faqHeading2" data-bs-parent="#pcosFaq">
+                <div class="accordion-body">
+                    No. PCOS can make ovulation less predictable, which may make conception
+                    more difficult for some people. Many people with PCOS conceive naturally
+                    or with medical support. A clinician can discuss suitable options.
+                </div>
+            </div>
+        </div>
+
+        <div class="accordion-item">
+            <h3 class="accordion-header" id="faqHeading3">
+                <button class="accordion-button collapsed" type="button"
+                        data-bs-toggle="collapse" data-bs-target="#faq3"
+                        aria-expanded="false" aria-controls="faq3">
+                    Can PCOS be diagnosed with an ultrasound alone?
+                </button>
+            </h3>
+
+            <div id="faq3" class="accordion-collapse collapse"
+                 aria-labelledby="faqHeading3" data-bs-parent="#pcosFaq">
+                <div class="accordion-body">
+                    No. Diagnosis requires an overall clinical assessment. In adults, a
+                    clinician generally considers at least two diagnostic features after
+                    excluding other causes. Ultrasound is not necessary in every case.
+                </div>
+            </div>
+        </div>
+
+        <div class="accordion-item">
+            <h3 class="accordion-header" id="faqHeading4">
+                <button class="accordion-button collapsed" type="button"
+                        data-bs-toggle="collapse" data-bs-target="#faq4"
+                        aria-expanded="false" aria-controls="faq4">
+                    Should I stop eating carbohydrates or sugar completely?
+                </button>
+            </h3>
+
+            <div id="faq4" class="accordion-collapse collapse"
+                 aria-labelledby="faqHeading4" data-bs-parent="#pcosFaq">
+                <div class="accordion-body">
+                    Strict elimination is not necessary for everyone. A balanced and
+                    sustainable eating pattern, including fibre-rich carbohydrates,
+                    is generally more practical than extreme restrictions. Individual
+                    needs may differ, especially with diabetes or other conditions.
+                </div>
+            </div>
+        </div>
+
+        <div class="accordion-item">
+            <h3 class="accordion-header" id="faqHeading5">
+                <button class="accordion-button collapsed" type="button"
+                        data-bs-toggle="collapse" data-bs-target="#faq5"
+                        aria-expanded="false" aria-controls="faq5">
+                    Can exercise help if my weight does not change?
+                </button>
+            </h3>
+
+            <div id="faq5" class="accordion-collapse collapse"
+                 aria-labelledby="faqHeading5" data-bs-parent="#pcosFaq">
+                <div class="accordion-body">
+                    Yes. Physical activity can support metabolic health, fitness and
+                    emotional well-being even when weight stays the same. Choose an
+                    activity and routine that are safe and sustainable for you.
+                </div>
+            </div>
+        </div>
+
+        <div class="accordion-item">
+            <h3 class="accordion-header" id="faqHeading6">
+                <button class="accordion-button collapsed" type="button"
+                        data-bs-toggle="collapse" data-bs-target="#faq6"
+                        aria-expanded="false" aria-controls="faq6">
+                    Which doctor should I consult?
+                </button>
+            </h3>
+
+            <div id="faq6" class="accordion-collapse collapse"
+                 aria-labelledby="faqHeading6" data-bs-parent="#pcosFaq">
+                <div class="accordion-body">
+                    A gynecologist can assess menstrual and reproductive symptoms.
+                    Depending on your needs, a primary-care doctor, endocrinologist,
+                    dermatologist or registered dietitian may also help with aspects
+                    of PCOS care.
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Personal action checklist -->
+    <div class="section-heading">
+        <h2 class="section-title fs-4">Your PCOS Care Checklist</h2>
+        <p>Useful information to prepare before a medical appointment.</p>
+    </div>
+
+    <div class="info-card">
+        <ul class="checklist mb-0">
+            <li>
+                <i class="fa-solid fa-check-circle"></i>
+                <span>Record period dates and any changes in your cycle.</span>
+            </li>
+            <li>
+                <i class="fa-solid fa-check-circle"></i>
+                <span>Write down symptoms, when they started, and how they affect you.</span>
+            </li>
+            <li>
+                <i class="fa-solid fa-check-circle"></i>
+                <span>List your current medicines and supplements.</span>
+            </li>
+            <li>
+                <i class="fa-solid fa-check-circle"></i>
+                <span>Ask whether glucose, cholesterol or blood-pressure checks are appropriate.</span>
+            </li>
+            <li>
+                <i class="fa-solid fa-check-circle"></i>
+                <span>Discuss your priorities, including symptom relief, cycle management or pregnancy plans.</span>
+            </li>
+        </ul>
+
+        <div class="d-flex flex-wrap gap-2 mt-4">
+            <a href="/cycle_tracker" class="btn btn-outline-rose">
+                <i class="fa-solid fa-calendar-days me-2"></i>Cycle Tracker
+            </a>
+
+            <a href="/doctor_finder" class="btn btn-rose">
+                <i class="fa-solid fa-user-doctor me-2"></i>Find Healthcare
+            </a>
+        </div>
+    </div>
+
+    <!-- Trusted sources -->
+    <div class="section-heading">
+        <h2 class="section-title fs-4">Trusted Sources for Further Reading</h2>
+        <p>Use established medical and public-health resources for more information.</p>
+    </div>
+
+    <div class="info-card">
+        <ul class="reference-list mb-0">
+            <li>
+                <strong>World Health Organization (WHO)</strong><br>
+                Overview of PCOS, diagnosis, symptoms and treatment.
+                <br>
+                <a class="reference-link"
+                   href="https://www.who.int/news-room/fact-sheets/detail/polycystic-ovary-syndrome/"
+                   target="_blank" rel="noopener noreferrer">
+                    Read the WHO PCOS fact sheet
+                    <i class="fa-solid fa-arrow-up-right-from-square ms-1"></i>
+                </a>
+            </li>
+
+            <li>
+                <strong>American College of Obstetricians and Gynecologists (ACOG)</strong><br>
+                Patient-focused information on symptoms, diagnosis and treatment.
+                <br>
+                <a class="reference-link"
+                   href="https://www.acog.org/womens-health/faqs/polycystic-ovary-syndrome-pcos"
+                   target="_blank" rel="noopener noreferrer">
+                    Read the ACOG PCOS FAQ
+                    <i class="fa-solid fa-arrow-up-right-from-square ms-1"></i>
+                </a>
+            </li>
+
+            <li>
+                <strong>2023 International Evidence-Based PCOS Guideline</strong><br>
+                International recommendations on assessment and management.
+                <br>
+                <a class="reference-link"
+                   href="https://www.eshre.eu/Guidelines-and-Legal/Guidelines/Polycystic-Ovary-Syndrome"
+                   target="_blank" rel="noopener noreferrer">
+                    Explore the international guideline
+                    <i class="fa-solid fa-arrow-up-right-from-square ms-1"></i>
+                </a>
+            </li>
+        </ul>
+    </div>
+
+    <div class="notice-panel mt-4">
+        <h2>
+            <i class="fa-solid fa-circle-exclamation me-2"></i>
+            Medical Disclaimer
+        </h2>
+
+        <p class="mb-0">
+            This page is for educational purposes only. It does not diagnose PCOS,
+            interpret personal medical results, or replace a consultation with a
+            qualified healthcare professional. Treatment decisions should be made
+            with an appropriate clinician.
+        </p>
+    </div>
+
+    <div class="text-center mt-4 mb-5">
+        <a href="/home" class="btn btn-rose btn-lg px-5">
+            <i class="fa-solid fa-house me-2"></i>
+            Back to Home
+        </a>
+    </div>
+
+    <footer class="page-footer">
+        PCOS Care — helping users access clear, responsible women's health information.
+        <br>
+        Educational content reviewed against the linked sources when this page was prepared.
+    </footer>
+
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+document.querySelectorAll(".alert-dismissible").forEach(function (alert) {
+    window.setTimeout(function () {
+        if (document.body.contains(alert)) {
+            bootstrap.Alert.getOrCreateInstance(alert).close();
+        }
+    }, 4000);
+});
+</script>
+
+</body>
+</html>

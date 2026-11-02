@@ -1,0 +1,651 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Exercise Planner | PCOS Care</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+          rel="stylesheet">
+
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&display=swap"
+          rel="stylesheet">
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='theme.css') }}">
+
+    <style>
+        :root {
+            --rose: #b8587a;
+            --plum: #4b2e43;
+            --pink-bg: #fff5f7;
+            --light-rose: #fce8ef;
+            --border: #f0dce5;
+            --muted: #786b75;
+        }
+
+        body {
+            margin: 0;
+            background: var(--pink-bg);
+            color: var(--plum);
+            font-family: 'Quicksand', sans-serif;
+        }
+
+        .navbar {
+            background: #fff;
+        }
+
+        .brand-text {
+            color: var(--plum);
+            font-weight: 700;
+        }
+
+        .brand-accent {
+            color: var(--rose);
+        }
+
+        .btn-rose {
+            background: var(--rose);
+            border: 1px solid var(--rose);
+            color: #fff;
+        }
+
+        .btn-rose:hover {
+            background: var(--plum);
+            border-color: var(--plum);
+            color: #fff;
+        }
+
+        .btn-outline-rose {
+            border: 1px solid var(--rose);
+            color: var(--rose);
+        }
+
+        .btn-outline-rose:hover {
+            background: var(--rose);
+            color: #fff;
+        }
+
+        .offcanvas {
+            background: #fffafd;
+        }
+
+        .sidebar-link {
+            display: block;
+            padding: 11px 14px;
+            margin-bottom: 7px;
+            border-radius: 10px;
+            color: var(--plum);
+            text-decoration: none;
+            transition: background .2s, color .2s;
+        }
+
+        .sidebar-link i {
+            width: 24px;
+            color: var(--rose);
+        }
+
+        .sidebar-link:hover,
+        .sidebar-link.active {
+            background: var(--light-rose);
+            color: var(--plum);
+            font-weight: 700;
+        }
+
+        .main {
+            max-width: 1000px;
+            margin: 35px auto;
+            padding: 34px;
+            background: #fff;
+            border: 1px solid var(--border);
+            border-radius: 22px;
+            box-shadow: 0 10px 30px rgba(75, 46, 67, .07);
+        }
+
+        .page-icon {
+            width: 66px;
+            height: 66px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 16px;
+            border-radius: 20px;
+            background: var(--light-rose);
+            color: var(--rose);
+            font-size: 27px;
+        }
+
+        .section-title {
+            color: var(--plum);
+            font-weight: 700;
+        }
+
+        .muted {
+            color: var(--muted);
+        }
+
+        .form-label {
+            color: var(--plum);
+            font-weight: 700;
+        }
+
+        .form-control,
+        .form-select {
+            min-height: 45px;
+            border-color: var(--border);
+            border-radius: 10px;
+        }
+
+        .form-control:focus,
+        .form-select:focus {
+            border-color: var(--rose);
+            box-shadow: 0 0 0 .2rem rgba(184, 88, 122, .13);
+        }
+
+        .cardx {
+            height: 100%;
+            padding: 22px;
+            background: #fffafd;
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            transition: transform .2s, box-shadow .2s;
+        }
+
+        .cardx:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(75, 46, 67, .06);
+        }
+
+        .cardx h5 {
+            color: var(--plum);
+            font-weight: 700;
+        }
+
+        .card-icon {
+            margin-right: 8px;
+            color: var(--rose);
+        }
+
+        .info-panel {
+            padding: 18px;
+            border-radius: 14px;
+            background: var(--pink-bg);
+            border: 1px solid var(--border);
+        }
+
+        .result-heading {
+            padding: 20px;
+            border-radius: 15px;
+            background: var(--light-rose);
+        }
+
+        .alert {
+            border-radius: 12px;
+        }
+
+        .footer-note {
+            color: var(--muted);
+            font-size: .85rem;
+        }
+
+        @media (max-width: 576px) {
+            .main {
+                margin: 20px auto;
+                padding: 22px 16px;
+            }
+
+            .navbar .btn {
+                padding: 8px 10px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+    <div class="container mt-3">
+        {% for category, message in messages %}
+        <div class="alert alert-{{ category }} alert-dismissible fade show shadow-sm"
+             role="alert">
+            {{ message }}
+            <button type="button" class="btn-close"
+                    data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+    {% endwith %}
+
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg shadow-sm sticky-top">
+        <div class="container">
+
+            <a class="navbar-brand d-flex align-items-center" href="/home">
+                <i class="fa-solid fa-hand-holding-heart me-2"
+                   style="color:var(--rose);"></i>
+                <span class="brand-text">PCOS</span>
+                <span class="brand-accent ms-1 fw-bold">Care</span>
+            </a>
+
+            <div class="d-flex align-items-center gap-2">
+                <button class="btn btn-outline-rose"
+                        type="button"
+                        data-bs-toggle="offcanvas"
+                        data-bs-target="#menu"
+                        aria-controls="menu"
+                        aria-label="Open navigation menu">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
+
+                <a href="/logout" class="btn btn-rose">
+                    <i class="fa-solid fa-right-from-bracket me-1"></i>
+                    Logout
+                </a>
+            </div>
+
+        </div>
+    </nav>
+
+    <!-- Sidebar -->
+    <div class="offcanvas offcanvas-start" tabindex="-1" id="menu"
+         aria-labelledby="menuLabel">
+
+        <div class="offcanvas-header">
+            <a class="navbar-brand d-flex align-items-center" href="/home"
+               id="menuLabel">
+                <i class="fa-solid fa-hand-holding-heart me-2"
+                   style="color:var(--rose);"></i>
+                <span class="brand-text">PCOS</span>
+                <span class="brand-accent ms-1 fw-bold">Care</span>
+            </a>
+
+            <button type="button" class="btn-close"
+                    data-bs-dismiss="offcanvas" aria-label="Close menu"></button>
+        </div>
+
+        <div class="offcanvas-body">
+            <a class="sidebar-link" href="/home">
+                <i class="fa-solid fa-house"></i> Home
+            </a>
+
+            <a class="sidebar-link" href="/profile">
+                <i class="fa-solid fa-user"></i> My Profile
+            </a>
+
+            <a class="sidebar-link" href="/settings">
+                <i class="fa-solid fa-gear"></i> Settings
+            </a>
+
+            <a class="sidebar-link" href="/history">
+                <i class="fa-solid fa-chart-line"></i> Prediction History
+            </a>
+
+            <a class="sidebar-link" href="/cycle_tracker">
+                <i class="fa-solid fa-calendar-days"></i> Cycle Tracker
+            </a>
+
+            <a class="sidebar-link" href="/diet_planner">
+                <i class="fa-solid fa-bowl-food"></i> Diet Planner
+            </a>
+
+            <a class="sidebar-link active" href="/exercise_planner"
+               aria-current="page">
+                <i class="fa-solid fa-dumbbell"></i> Exercise Planner
+            </a>
+
+            <a class="sidebar-link" href="/doctor_finder">
+                <i class="fa-solid fa-user-doctor"></i> Doctor Finder
+            </a>
+
+            <a class="sidebar-link" href="/education">
+                <i class="fa-solid fa-book-open"></i> PCOS Education
+            </a>
+
+            {% if session.get("user_email") in [
+                "syedaasra2407@gmail.com",
+                "khushigupta46576@gmail.com",
+                "ayushikashyap91427@gmail.com"
+            ] %}
+            <a class="sidebar-link" href="/admin">
+                <i class="fa-solid fa-user-shield"></i> Admin Dashboard
+            </a>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <main class="container">
+
+        <div class="main">
+
+            <div class="text-center mb-4">
+                <div class="page-icon">
+                    <i class="fa-solid fa-dumbbell"></i>
+                </div>
+
+                <h1 class="section-title h2">Personalized Exercise Planner</h1>
+
+                <p class="muted mb-0">
+                    Build a realistic movement routine that supports your
+                    strength, energy, and overall well-being.
+                </p>
+            </div>
+
+            <div class="info-panel mb-4">
+                <h5 class="section-title">
+                    <i class="fa-solid fa-heart-pulse card-icon"></i>
+                    Movement and PCOS
+                </h5>
+                <p class="mb-0 muted">
+                    Regular physical activity can support cardiovascular health,
+                    insulin sensitivity, mood, sleep, and general well-being.
+                    You do not need an intense workout to get started, and
+                    exercise can be beneficial regardless of weight change.
+                </p>
+            </div>
+
+            <!-- Exercise Form -->
+            <form action="/generate_exercise" method="POST">
+                <input type="hidden" name="csrf_token"
+                       value="{{ csrf_token() }}">
+
+                <div class="row g-3">
+
+                    <div class="col-md-4">
+                        <label for="bmi" class="form-label">BMI</label>
+
+                        <input type="number"
+                               id="bmi"
+                               step="0.1"
+                               min="10"
+                               max="70"
+                               class="form-control"
+                               name="bmi"
+                               placeholder="e.g. 24.5"
+                               value="{{ prefill_bmi or '' }}"
+                               required>
+
+                        {% if prefill_bmi %}
+                        <div class="form-text">
+                            Prefilled from your latest screening.
+                        </div>
+                        {% else %}
+                        <div class="form-text">
+                            Enter your BMI if it is known.
+                        </div>
+                        {% endif %}
+                    </div>
+
+                    <div class="col-md-4">
+                        <label for="level" class="form-label">
+                            Current fitness level
+                        </label>
+
+                        <select name="level" id="level" class="form-select"
+                                required>
+                            {% for l in ['Beginner', 'Moderate', 'Active'] %}
+                            <option value="{{ l }}"
+                                {% if form_level == l %}selected{% endif %}>
+                                {{ l }}
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="col-md-4 d-flex align-items-center pt-md-4">
+                        <div class="form-check mt-md-2">
+                            <input class="form-check-input"
+                                   type="checkbox"
+                                   name="joint_issue"
+                                   value="yes"
+                                   id="joint"
+                                   {% if form_joint %}checked{% endif %}>
+
+                            <label class="form-check-label" for="joint">
+                                I have joint pain or an injury
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="col-12">
+                        <button type="submit" class="btn btn-rose w-100 py-3">
+                            <i class="fa-solid fa-wand-magic-sparkles me-2"></i>
+                            Generate My Exercise Plan
+                        </button>
+                    </div>
+                </div>
+            </form>
+
+            {% if plan %}
+            <hr class="my-4">
+
+            {% if high_risk %}
+            <div class="alert alert-warning" role="alert">
+                <i class="fa-solid fa-triangle-exclamation me-2"></i>
+                <strong>Health reminder:</strong>
+                Your latest screening indicated a higher estimated PCOS risk.
+                A screening result cannot confirm PCOS. Consider discussing it
+                with a qualified healthcare professional. This exercise plan
+                is general fitness guidance, not PCOS treatment.
+            </div>
+            {% endif %}
+
+            <div class="result-heading mb-4">
+                <h2 class="h4 section-title mb-3">
+                    <i class="fa-solid fa-clipboard-check me-2"></i>
+                    Your Exercise Plan
+                </h2>
+
+                <div class="row g-3">
+                    <div class="col-sm-4">
+                        <div class="small muted">BMI</div>
+                        <div class="fw-bold">{{ bmi }}</div>
+                    </div>
+
+                    <div class="col-sm-4">
+                        <div class="small muted">BMI category</div>
+                        <div class="fw-bold">{{ plan.category }}</div>
+                    </div>
+
+                    <div class="col-sm-4">
+                        <div class="small muted">Fitness level</div>
+                        <div class="fw-bold">{{ plan.level }}</div>
+                    </div>
+                </div>
+
+                <p class="small muted mt-3 mb-0">
+                    BMI is a screening measure and does not independently
+                    determine your fitness or the type of exercise you need.
+                </p>
+            </div>
+
+            <div class="row g-3">
+
+                <div class="col-md-6">
+                    <div class="cardx">
+                        <h3 class="h5">
+                            <i class="fa-solid fa-person-walking card-icon"></i>
+                            Warm-up
+                        </h3>
+                        <p class="mb-0">{{ plan.warmup }}</p>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="cardx">
+                        <h3 class="h5">
+                            <i class="fa-solid fa-heart-pulse card-icon"></i>
+                            Cardio
+                        </h3>
+                        <p class="mb-0">{{ plan.cardio }}</p>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="cardx">
+                        <h3 class="h5">
+                            <i class="fa-solid fa-dumbbell card-icon"></i>
+                            Strength Training
+                        </h3>
+                        <p class="mb-0">{{ plan.strength }}</p>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="cardx">
+                        <h3 class="h5">
+                            <i class="fa-solid fa-spa card-icon"></i>
+                            Yoga and Flexibility
+                        </h3>
+                        <p class="mb-0">{{ plan.yoga }}</p>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="cardx mt-4">
+                <h3 class="h5">
+                    <i class="fa-solid fa-clock card-icon"></i>
+                    Suggested Daily Duration
+                </h3>
+                <p class="h4 fw-bold mb-0">{{ plan.duration }}</p>
+            </div>
+
+            {% if plan.notes %}
+            <div class="alert alert-light border mt-4">
+                <h3 class="h6 section-title">
+                    <i class="fa-solid fa-lightbulb me-2"
+                       style="color:var(--rose);"></i>
+                    Tips for Your Routine
+                </h3>
+
+                <ul class="mb-0">
+                    {% for n in plan.notes %}
+                    <li class="mb-1">{{ n }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+            {% endif %}
+
+            {% endif %}
+
+            <!-- General guidance -->
+            <hr class="my-4">
+
+            <h2 class="h5 section-title mb-3">
+                <i class="fa-solid fa-list-check card-icon"></i>
+                Healthy Exercise Habits
+            </h2>
+
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <div class="cardx">
+                        <h3 class="h6">
+                            <i class="fa-solid fa-person-walking card-icon"></i>
+                            Start gradually
+                        </h3>
+                        <p class="muted mb-0">
+                            If you are new to exercise, begin with short,
+                            comfortable sessions and increase duration or
+                            intensity gradually as you feel able.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="cardx">
+                        <h3 class="h6">
+                            <i class="fa-solid fa-calendar-check card-icon"></i>
+                            Be consistent
+                        </h3>
+                        <p class="muted mb-0">
+                            Walking, cycling, swimming, dancing, and
+                            strength exercises are possible options.
+                            Choose activities you enjoy and can maintain.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="cardx">
+                        <h3 class="h6">
+                            <i class="fa-solid fa-bed card-icon"></i>
+                            Make room for recovery
+                        </h3>
+                        <p class="muted mb-0">
+                            Balance activity with rest, adequate sleep,
+                            hydration, and meals that support your energy.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="cardx">
+                        <h3 class="h6">
+                            <i class="fa-solid fa-shield-heart card-icon"></i>
+                            Respect your limits
+                        </h3>
+                        <p class="muted mb-0">
+                            Stop if you feel unwell. If you have an injury,
+                            persistent pain, or a health condition affecting
+                            exercise, seek appropriate professional advice.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="alert alert-info mt-4 mb-0" role="note">
+                <strong>Important:</strong>
+                This planner provides general wellness information and does
+                not replace medical advice. If you experience chest pain,
+                fainting, or severe or unusual shortness of breath during
+                exercise, stop and seek urgent medical assessment.
+            </div>
+
+            <!-- Navigation buttons -->
+            <div class="d-flex flex-wrap justify-content-center gap-2 mt-4">
+
+                <a href="/home" class="btn btn-outline-rose px-4">
+                    <i class="fa-solid fa-house me-2"></i>Home
+                </a>
+
+                <a href="/diet_planner" class="btn btn-rose px-4">
+                    <i class="fa-solid fa-bowl-food me-2"></i>Diet Planner
+                </a>
+
+                <a href="/cycle_tracker" class="btn btn-outline-rose px-4">
+                    <i class="fa-solid fa-calendar-days me-2"></i>Cycle Tracker
+                </a>
+
+                <a href="/education" class="btn btn-outline-rose px-4">
+                    <i class="fa-solid fa-book-open me-2"></i>Learn About PCOS
+                </a>
+
+            </div>
+
+            <p class="footer-note text-center mt-4 mb-0">
+                PCOS Care · Supporting informed, sustainable wellness habits
+            </p>
+
+        </div>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        window.setTimeout(function () {
+            document.querySelectorAll(".alert-dismissible").forEach(function (alert) {
+                bootstrap.Alert.getOrCreateInstance(alert).close();
+            });
+        }, 4000);
+    </script>
+
+</body>
+</html>

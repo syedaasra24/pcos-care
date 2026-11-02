@@ -1,0 +1,848 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>My Profile | PCOS Care</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+          rel="stylesheet">
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&display=swap"
+          rel="stylesheet">
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='theme.css') }}">
+
+    <style>
+        :root {
+            --rose: #b8587a;
+            --rose-dark: #9d4163;
+            --plum: #4b2e43;
+            --pink-bg: #fff5f7;
+            --pink-light: #fff0f4;
+            --border: #f0dfe6;
+            --text: #443540;
+            --muted: #827581;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            background: var(--pink-bg);
+            color: var(--text);
+            font-family: 'Quicksand', sans-serif;
+        }
+
+        .navbar {
+            border-bottom: 1px solid var(--border);
+        }
+
+        .brand-name {
+            color: var(--plum);
+            font-weight: 700;
+            font-size: 1.25rem;
+        }
+
+        .brand-name span,
+        .brand-icon {
+            color: var(--rose);
+        }
+
+        .btn-rose {
+            color: white;
+            background: var(--rose);
+            border: 1px solid var(--rose);
+            border-radius: 10px;
+            font-weight: 700;
+        }
+
+        .btn-rose:hover {
+            color: white;
+            background: var(--rose-dark);
+            border-color: var(--rose-dark);
+        }
+
+        .btn-outline-rose {
+            color: var(--rose-dark);
+            border: 1px solid var(--rose);
+            border-radius: 10px;
+            font-weight: 700;
+        }
+
+        .btn-outline-rose:hover {
+            color: white;
+            background: var(--rose);
+        }
+
+        .profile-wrapper {
+            max-width: 1100px;
+            margin: 35px auto 55px;
+            padding: 0 18px;
+        }
+
+        .page-heading {
+            margin-bottom: 24px;
+        }
+
+        .page-heading h1 {
+            color: var(--plum);
+            font-size: clamp(1.7rem, 4vw, 2.2rem);
+            font-weight: 700;
+        }
+
+        .page-heading p {
+            color: var(--muted);
+            margin-bottom: 0;
+        }
+
+        /* Profile hero */
+        .profile-hero {
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            gap: 24px;
+            padding: 32px;
+            margin-bottom: 25px;
+            border: 1px solid var(--border);
+            border-radius: 22px;
+            background: linear-gradient(120deg, #fff 20%, #fdebf1 100%);
+            box-shadow: 0 8px 28px rgba(75, 46, 67, 0.05);
+        }
+
+        .profile-avatar {
+            display: grid;
+            place-items: center;
+            width: 100px;
+            height: 100px;
+            flex-shrink: 0;
+            border-radius: 28px;
+            background: linear-gradient(145deg, #d98ba5, var(--plum));
+            color: white;
+            font-size: 2.5rem;
+            box-shadow: 0 8px 18px rgba(75, 46, 67, 0.16);
+        }
+
+        .profile-hero h2 {
+            color: var(--plum);
+            font-weight: 700;
+            font-size: 1.65rem;
+            overflow-wrap: anywhere;
+        }
+
+        .profile-email {
+            color: var(--muted);
+            overflow-wrap: anywhere;
+        }
+
+        .member-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            padding: 7px 12px;
+            margin-top: 8px;
+            border-radius: 30px;
+            background: #e8f6ee;
+            color: #26744b;
+            font-size: 0.8rem;
+            font-weight: 700;
+        }
+
+        .hero-decoration {
+            position: absolute;
+            right: 35px;
+            bottom: -32px;
+            color: rgba(184, 88, 122, 0.08);
+            font-size: 9rem;
+            pointer-events: none;
+        }
+
+        .profile-layout {
+            display: grid;
+            grid-template-columns: minmax(0, 1.5fr) minmax(260px, 0.85fr);
+            gap: 24px;
+            align-items: start;
+        }
+
+        .profile-card {
+            padding: 26px;
+            margin-bottom: 24px;
+            border: 1px solid var(--border);
+            border-radius: 18px;
+            background: #fff;
+            box-shadow: 0 6px 22px rgba(75, 46, 67, 0.045);
+        }
+
+        .card-heading {
+            display: flex;
+            align-items: center;
+            gap: 13px;
+            margin-bottom: 23px;
+        }
+
+        .heading-icon {
+            display: grid;
+            place-items: center;
+            width: 45px;
+            height: 45px;
+            flex-shrink: 0;
+            border-radius: 14px;
+            background: var(--pink-light);
+            color: var(--rose);
+            font-size: 1.1rem;
+        }
+
+        .card-heading h3 {
+            margin: 0;
+            color: var(--plum);
+            font-size: 1.1rem;
+            font-weight: 700;
+        }
+
+        .card-heading p {
+            margin: 4px 0 0;
+            color: var(--muted);
+            font-size: 0.85rem;
+        }
+
+        .form-label {
+            color: var(--plum);
+            font-size: 0.9rem;
+            font-weight: 700;
+        }
+
+        .form-control {
+            min-height: 47px;
+            border: 1px solid #e8d9e0;
+            border-radius: 11px;
+            background: #fffdfd;
+        }
+
+        .form-control:focus {
+            border-color: var(--rose);
+            box-shadow: 0 0 0 0.2rem rgba(184, 88, 122, 0.12);
+        }
+
+        .form-hint {
+            color: var(--muted);
+            font-size: 0.8rem;
+            margin-top: 6px;
+        }
+
+        .detail-row {
+            display: flex;
+            align-items: flex-start;
+            gap: 13px;
+            padding: 15px 0;
+            border-bottom: 1px solid #f3e8ed;
+        }
+
+        .detail-row:last-child {
+            border-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .detail-icon {
+            display: grid;
+            place-items: center;
+            width: 38px;
+            height: 38px;
+            flex-shrink: 0;
+            border-radius: 12px;
+            background: var(--pink-light);
+            color: var(--rose);
+        }
+
+        .detail-label {
+            display: block;
+            margin-bottom: 4px;
+            color: var(--muted);
+            font-size: 0.8rem;
+        }
+
+        .detail-value {
+            color: var(--plum);
+            font-weight: 700;
+            overflow-wrap: anywhere;
+        }
+
+        .quick-link {
+            display: flex;
+            align-items: center;
+            gap: 13px;
+            padding: 14px 0;
+            border-bottom: 1px solid #f3e8ed;
+            text-decoration: none;
+            color: var(--text);
+            transition: color 0.2s ease;
+        }
+
+        .quick-link:last-child {
+            border-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .quick-link:hover {
+            color: var(--rose-dark);
+        }
+
+        .quick-link-icon {
+            display: grid;
+            place-items: center;
+            width: 40px;
+            height: 40px;
+            flex-shrink: 0;
+            border-radius: 12px;
+            background: var(--pink-light);
+            color: var(--rose);
+        }
+
+        .quick-link-text {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .quick-link-text strong {
+            display: block;
+            font-size: 0.9rem;
+        }
+
+        .quick-link-text small {
+            color: var(--muted);
+            font-size: 0.79rem;
+        }
+
+        .wellness-note {
+            padding: 19px;
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            background: linear-gradient(130deg, #fff, #fff0f4);
+        }
+
+        .wellness-note h4 {
+            color: var(--plum);
+            font-size: 1rem;
+            font-weight: 700;
+        }
+
+        .wellness-note p {
+            color: var(--muted);
+            font-size: 0.86rem;
+            line-height: 1.7;
+            margin-bottom: 0;
+        }
+
+        .privacy-note {
+            color: var(--muted);
+            font-size: 0.82rem;
+            line-height: 1.65;
+        }
+
+        .profile-footer {
+            padding-top: 15px;
+            text-align: center;
+            color: var(--muted);
+            font-size: 0.84rem;
+        }
+
+        @media (max-width: 768px) {
+            .profile-layout {
+                grid-template-columns: 1fr;
+            }
+
+            .profile-hero {
+                padding: 24px;
+            }
+
+            .hero-decoration {
+                right: 12px;
+                font-size: 6rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .profile-wrapper {
+                margin-top: 24px;
+                padding: 0 12px;
+            }
+
+            .profile-hero {
+                align-items: flex-start;
+                gap: 16px;
+                padding: 20px;
+            }
+
+            .profile-avatar {
+                width: 68px;
+                height: 68px;
+                border-radius: 20px;
+                font-size: 1.8rem;
+            }
+
+            .profile-hero h2 {
+                font-size: 1.2rem;
+            }
+
+            .profile-card {
+                padding: 19px;
+            }
+
+            .hero-decoration {
+                display: none;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Flash messages -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <div class="container mt-3">
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }} alert-dismissible fade show shadow-sm"
+                         role="alert">
+                        {{ message }}
+                        <button type="button"
+                                class="btn-close"
+                                data-bs-dismiss="alert"
+                                aria-label="Close"></button>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endwith %}
+
+    <!-- Top navigation -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm sticky-top">
+        <div class="container">
+            <a class="navbar-brand d-flex align-items-center text-decoration-none"
+               href="/home">
+                <i class="fa-solid fa-hand-holding-heart brand-icon me-2"></i>
+                <span class="brand-name">PCOS <span>Care</span></span>
+            </a>
+
+            <div class="d-flex align-items-center gap-2">
+                <button class="btn btn-outline-rose"
+                        type="button"
+                        data-bs-toggle="offcanvas"
+                        data-bs-target="#menu"
+                        aria-controls="menu"
+                        aria-label="Open navigation menu">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
+
+                <a href="/logout" class="btn btn-rose">
+                    <i class="fa-solid fa-right-from-bracket me-1"></i>
+                    Logout
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Sidebar -->
+    <div class="offcanvas offcanvas-start pcos-sidebar"
+         tabindex="-1"
+         id="menu"
+         aria-labelledby="pcosSidebarLabel">
+
+        <div class="offcanvas-header pcos-sidebar-header">
+            <a class="pcos-sidebar-brand text-decoration-none"
+               href="/home"
+               id="pcosSidebarLabel">
+                <span class="pcos-brand-icon">
+                    <i class="fa-solid fa-hand-holding-heart"></i>
+                </span>
+                <span class="pcos-brand-text">
+                    <strong>PCOS Care</strong>
+                    <small>Women's Wellness</small>
+                </span>
+            </a>
+
+            <button type="button"
+                    class="btn-close"
+                    data-bs-dismiss="offcanvas"
+                    aria-label="Close menu"></button>
+        </div>
+
+        <div class="offcanvas-body pcos-sidebar-body">
+            <div class="pcos-nav-label">MAIN MENU</div>
+
+            <nav class="pcos-nav" aria-label="Main navigation">
+                <a class="pcos-nav-link" href="/home">
+                    <i class="fa-solid fa-house"></i><span>Home</span>
+                </a>
+
+                <a class="pcos-nav-link active"
+                   href="/profile"
+                   aria-current="page">
+                    <i class="fa-regular fa-user"></i><span>My Profile</span>
+                    <span class="pcos-active-indicator"></span>
+                </a>
+
+                <a class="pcos-nav-link" href="/history">
+                    <i class="fa-solid fa-chart-line"></i><span>Prediction History</span>
+                </a>
+
+                <a class="pcos-nav-link" href="/cycle_tracker">
+                    <i class="fa-regular fa-calendar-days"></i><span>Cycle Tracker</span>
+                </a>
+
+                <a class="pcos-nav-link" href="/diet_planner">
+                    <i class="fa-solid fa-utensils"></i><span>Diet Planner</span>
+                </a>
+
+                <a class="pcos-nav-link" href="/exercise_planner">
+                    <i class="fa-solid fa-person-walking"></i><span>Exercise Planner</span>
+                </a>
+
+                <a class="pcos-nav-link" href="/doctor_finder">
+                    <i class="fa-solid fa-user-doctor"></i><span>Doctor Finder</span>
+                </a>
+
+                <a class="pcos-nav-link" href="/education">
+                    <i class="fa-solid fa-book-open"></i><span>PCOS Education</span>
+                </a>
+            </nav>
+
+            <div class="pcos-nav-divider"></div>
+            <div class="pcos-nav-label">PREFERENCES</div>
+
+            <nav class="pcos-nav" aria-label="Preferences">
+                <a class="pcos-nav-link" href="/settings">
+                    <i class="fa-solid fa-sliders"></i><span>Settings</span>
+                </a>
+            </nav>
+
+            {% if session.get("user_email") in [
+                "syedaasra2407@gmail.com",
+                "khushigupta46576@gmail.com",
+                "ayushikashyap91427@gmail.com"
+            ] %}
+                <div class="pcos-nav-divider"></div>
+                <div class="pcos-nav-label">ADMINISTRATION</div>
+
+                <nav class="pcos-nav" aria-label="Administration">
+                    <a class="pcos-nav-link pcos-admin-link" href="/admin">
+                        <i class="fa-solid fa-shield-halved"></i>
+                        <span>Admin Dashboard</span>
+                    </a>
+                </nav>
+            {% endif %}
+
+            <div class="pcos-sidebar-footer">
+                <div class="pcos-sidebar-footer-icon">
+                    <i class="fa-solid fa-heart-pulse"></i>
+                </div>
+                <div>
+                    <strong>PCOS Care</strong>
+                    <small>Your wellness, your journey.</small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Profile page -->
+    <main class="profile-wrapper">
+
+        <header class="page-heading">
+            <h1><i class="fa-regular fa-user me-2"></i>My Profile</h1>
+            <p>Your account information and shortcuts to your wellness tools.</p>
+        </header>
+
+        <!-- Personal profile header -->
+        <section class="profile-hero">
+            <div class="profile-avatar" aria-hidden="true">
+                <i class="fa-solid fa-user"></i>
+            </div>
+
+            <div class="position-relative" style="z-index: 1; min-width: 0;">
+                <span class="text-uppercase small fw-bold"
+                      style="color: var(--rose); letter-spacing: 1.4px;">
+                    YOUR PCOS CARE ACCOUNT
+                </span>
+
+                <h2 class="mt-2 mb-1">{{ user.full_name }}</h2>
+
+                <p class="profile-email mb-0">{{ user.email }}</p>
+
+                <span class="member-badge">
+                    <i class="fa-solid fa-circle-check"></i>
+                    Account Active
+                </span>
+            </div>
+
+            <i class="fa-solid fa-hand-holding-heart hero-decoration"
+               aria-hidden="true"></i>
+        </section>
+
+        <div class="profile-layout">
+
+            <!-- Left column -->
+            <div>
+
+                <!-- Edit profile -->
+                <section class="profile-card">
+                    <div class="card-heading">
+                        <div class="heading-icon">
+                            <i class="fa-solid fa-user-pen"></i>
+                        </div>
+                        <div>
+                            <h3>Personal Information</h3>
+                            <p>Keep your account details accurate and up to date.</p>
+                        </div>
+                    </div>
+
+                    <form method="POST" action="/update_profile">
+                        <input type="hidden" name="csrf_token"
+                               value="{{ csrf_token() }}">
+
+                        <div class="mb-4">
+                            <label for="name" class="form-label">Full Name</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-white">
+                                    <i class="fa-regular fa-user"
+                                       style="color: var(--rose);"></i>
+                                </span>
+                                <input type="text"
+                                       class="form-control"
+                                       id="name"
+                                       name="name"
+                                       value="{{ user.full_name }}"
+                                       autocomplete="name"
+                                       maxlength="100"
+                                       required>
+                            </div>
+                            <div class="form-hint">
+                                Use the name you want associated with your account.
+                            </div>
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="email" class="form-label">Email Address</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-white">
+                                    <i class="fa-regular fa-envelope"
+                                       style="color: var(--rose);"></i>
+                                </span>
+                                <input type="email"
+                                       class="form-control"
+                                       id="email"
+                                       name="email"
+                                       value="{{ user.email }}"
+                                       autocomplete="email"
+                                       maxlength="254"
+                                       required>
+                            </div>
+                            <div class="form-hint">
+                                Make sure you can access this email address.
+                            </div>
+                        </div>
+
+                        <div class="d-flex flex-wrap gap-2">
+                            <button type="submit" class="btn btn-rose px-4">
+                                <i class="fa-solid fa-floppy-disk me-2"></i>
+                                Save Changes
+                            </button>
+
+                            <a href="/settings" class="btn btn-outline-rose px-4">
+                                <i class="fa-solid fa-sliders me-2"></i>
+                                Settings
+                            </a>
+                        </div>
+                    </form>
+                </section>
+
+                <!-- Account information -->
+                <section class="profile-card">
+                    <div class="card-heading">
+                        <div class="heading-icon">
+                            <i class="fa-solid fa-id-card"></i>
+                        </div>
+                        <div>
+                            <h3>Account Information</h3>
+                            <p>Basic details associated with your account.</p>
+                        </div>
+                    </div>
+
+                    <div class="detail-row">
+                        <div class="detail-icon">
+                            <i class="fa-solid fa-fingerprint"></i>
+                        </div>
+                        <div>
+                            <span class="detail-label">Account ID</span>
+                            <span class="detail-value">{{ user.id }}</span>
+                        </div>
+                    </div>
+
+                    <div class="detail-row">
+                        <div class="detail-icon">
+                            <i class="fa-regular fa-envelope"></i>
+                        </div>
+                        <div>
+                            <span class="detail-label">Registered Email</span>
+                            <span class="detail-value">{{ user.email }}</span>
+                        </div>
+                    </div>
+
+                    <div class="detail-row">
+                        <div class="detail-icon">
+                            <i class="fa-solid fa-shield-heart"></i>
+                        </div>
+                        <div>
+                            <span class="detail-label">Account Status</span>
+                            <span class="member-badge mt-1">
+                                <i class="fa-solid fa-circle-check"></i> Active
+                            </span>
+                        </div>
+                    </div>
+                </section>
+            </div>
+
+            <!-- Right column -->
+            <aside>
+
+                <!-- Wellness shortcuts -->
+                <section class="profile-card">
+                    <div class="card-heading">
+                        <div class="heading-icon">
+                            <i class="fa-solid fa-heart-pulse"></i>
+                        </div>
+                        <div>
+                            <h3>Your Wellness Tools</h3>
+                            <p>Continue where you left off.</p>
+                        </div>
+                    </div>
+
+                    <a href="/cycle_tracker" class="quick-link">
+                        <span class="quick-link-icon">
+                            <i class="fa-regular fa-calendar-days"></i>
+                        </span>
+                        <span class="quick-link-text">
+                            <strong>Cycle Tracker</strong>
+                            <small>Manage your cycle entries</small>
+                        </span>
+                        <i class="fa-solid fa-chevron-right small"></i>
+                    </a>
+
+                    <a href="/history" class="quick-link">
+                        <span class="quick-link-icon">
+                            <i class="fa-solid fa-chart-line"></i>
+                        </span>
+                        <span class="quick-link-text">
+                            <strong>Prediction History</strong>
+                            <small>Review saved assessments</small>
+                        </span>
+                        <i class="fa-solid fa-chevron-right small"></i>
+                    </a>
+
+                    <a href="/diet_planner" class="quick-link">
+                        <span class="quick-link-icon">
+                            <i class="fa-solid fa-utensils"></i>
+                        </span>
+                        <span class="quick-link-text">
+                            <strong>Diet Planner</strong>
+                            <small>Explore nutrition guidance</small>
+                        </span>
+                        <i class="fa-solid fa-chevron-right small"></i>
+                    </a>
+
+                    <a href="/exercise_planner" class="quick-link">
+                        <span class="quick-link-icon">
+                            <i class="fa-solid fa-person-walking"></i>
+                        </span>
+                        <span class="quick-link-text">
+                            <strong>Exercise Planner</strong>
+                            <small>Explore movement ideas</small>
+                        </span>
+                        <i class="fa-solid fa-chevron-right small"></i>
+                    </a>
+
+                    <a href="/education" class="quick-link">
+                        <span class="quick-link-icon">
+                            <i class="fa-solid fa-book-open"></i>
+                        </span>
+                        <span class="quick-link-text">
+                            <strong>PCOS Education</strong>
+                            <small>Learn from health resources</small>
+                        </span>
+                        <i class="fa-solid fa-chevron-right small"></i>
+                    </a>
+                </section>
+
+                <!-- Wellness message -->
+                <section class="wellness-note mb-4">
+                    <div class="heading-icon mb-3">
+                        <i class="fa-solid fa-seedling"></i>
+                    </div>
+
+                    <h4>Your journey, at your pace</h4>
+                    <p>
+                        Small, consistent steps can support your overall well-being.
+                        Explore the tools that feel useful to you, and seek guidance
+                        from a qualified healthcare professional for personal medical concerns.
+                    </p>
+                </section>
+
+                <!-- Privacy guidance -->
+                <section class="profile-card">
+                    <div class="card-heading mb-3">
+                        <div class="heading-icon">
+                            <i class="fa-solid fa-shield-halved"></i>
+                        </div>
+                        <div>
+                            <h3>Privacy Reminder</h3>
+                            <p>Take care of your account.</p>
+                        </div>
+                    </div>
+
+                    <p class="privacy-note mb-3">
+                        Your profile and health-related information can be sensitive.
+                        Use a strong password and sign out when using a shared device.
+                    </p>
+
+                    <a href="/forgot_password"
+                       class="btn btn-outline-rose w-100">
+                        <i class="fa-solid fa-key me-2"></i>
+                        Password Assistance
+                    </a>
+
+                    <a href="/settings"
+                       class="btn btn-link w-100 mt-2 text-decoration-none"
+                       style="color: var(--rose-dark);">
+                        View Account Settings
+                        <i class="fa-solid fa-arrow-right ms-1"></i>
+                    </a>
+                </section>
+            </aside>
+        </div>
+
+        <div class="text-center">
+            <a href="/home" class="btn btn-rose px-4 py-2">
+                <i class="fa-solid fa-house me-2"></i> Back to Dashboard
+            </a>
+        </div>
+
+        <footer class="profile-footer">
+            <i class="fa-solid fa-hand-holding-heart me-1"></i>
+            PCOS Care · Supporting your wellness journey
+        </footer>
+
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        window.setTimeout(function () {
+            document.querySelectorAll(".alert").forEach(function (alertElement) {
+                bootstrap.Alert.getOrCreateInstance(alertElement).close();
+            });
+        }, 4000);
+    </script>
+
+</body>
+</html>

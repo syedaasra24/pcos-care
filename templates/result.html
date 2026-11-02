@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PCOS Care - Your Wellness Report</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,700;1,500&family=Quicksand:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{{ url_for('static', filename='theme.css') }}">
+<style>
+/* ---------- Soft rose report theme (scoped to this page) ---------- */
+html{ background:#fbf3f9; }
+body.rp{
+    --plum:#4b2e43; --muted:#8a7080; --rose:#d98aa3; --rose-deep:#b8587a;
+    --blush:#fff5f7; --lav:#f6eefa; --gold:#c8a36a; --line:#f6dfe6;
+    --accent:#4fa99b; --accent-soft:#e8f6f3;
+    background:linear-gradient(180deg,#fff5f7 0%,#fbf3f9 45%,#f2f9f8 100%) fixed !important;
+    color:var(--plum);
+}
+.rp .lvl-moderate{ --accent:#e08f62; --accent-soft:#fff1e8; }
+.rp .lvl-high{ --accent:#c04f73; --accent-soft:#fdebf0; }
+
+.rp .serif{ font-family:'Playfair Display',Georgia,serif; }
+.rp .report{ max-width:960px; margin:34px auto 60px; padding:0 14px; }
+
+.rp .panel{
+    background:#fff; border:1px solid var(--line); border-radius:26px;
+    box-shadow:0 14px 44px rgba(184,88,122,.10); padding:30px; margin-bottom:22px;
+}
+
+/* Header */
+.rp .hero-head{
+    position:relative; overflow:hidden; text-align:center;
+    background:linear-gradient(135deg,#fff0f4 0%,#f6eefa 55%,#eaf7f4 100%);
+    border:1px solid var(--line); border-radius:28px; padding:38px 24px 28px;
+    box-shadow:0 14px 44px rgba(184,88,122,.10); margin-bottom:22px;
+}
+.rp .hero-head::before,.rp .hero-head::after{
+    content:""; position:absolute; border-radius:50%; opacity:.5; pointer-events:none;
+}
+.rp .hero-head::before{ width:230px;height:230px;left:-70px;top:-90px;background:radial-gradient(circle,#f8c9d8,transparent 70%); }
+.rp .hero-head::after{ width:260px;height:260px;right:-80px;bottom:-120px;background:radial-gradient(circle,#c9e9e3,transparent 70%); }
+.rp .eyebrow{ letter-spacing:.28em; text-transform:uppercase; font-size:12px; font-weight:700; color:var(--rose-deep); }
+.rp .hero-head h1{ font-family:'Playfair Display',serif; font-style:italic; font-weight:500; font-size:clamp(30px,5vw,44px); margin:8px 0 18px; color:var(--plum); }
+.rp .meta{ display:flex; flex-wrap:wrap; gap:10px; justify-content:center; position:relative; z-index:1; }
+.rp .chip{
+    background:rgba(255,255,255,.8); border:1px solid var(--line); border-radius:50px;
+    padding:7px 16px; font-size:14px; color:var(--plum);
+}
+.rp .chip i{ color:var(--rose-deep); margin-right:6px; }
+
+/* Result */
+.rp .result-grid{ display:grid; grid-template-columns:230px 1fr; gap:30px; align-items:center; }
+.rp .ring{ position:relative; width:210px; height:210px; margin:auto; }
+.rp .ring svg{ width:100%; height:100%; transform:rotate(-90deg); }
+.rp .ring .track{ stroke:#f6e6ec; }
+.rp .ring .bar{ stroke:var(--accent); stroke-linecap:round; }
+.rp .ring .center{ position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; }
+.rp .ring .pct{ font-family:'Playfair Display',serif; font-size:46px; font-weight:700; line-height:1; color:var(--plum); }
+.rp .ring .cap{ font-size:12px; letter-spacing:.16em; text-transform:uppercase; color:var(--muted); margin-top:6px; }
+.rp .verdict-tag{
+    display:inline-block; background:var(--accent-soft); color:var(--accent);
+    border-radius:50px; padding:6px 16px; font-weight:700; font-size:13px; letter-spacing:.08em; text-transform:uppercase;
+}
+.rp .verdict h2{ font-family:'Playfair Display',serif; font-weight:700; font-size:clamp(26px,4vw,34px); margin:12px 0 10px; }
+.rp .verdict p{ color:var(--muted); line-height:1.7; margin:0; }
+
+/* Stat tiles */
+.rp .tiles{ display:grid; grid-template-columns:repeat(3,1fr); gap:16px; margin-top:26px; }
+.rp .tile{ background:var(--blush); border:1px solid var(--line); border-radius:20px; padding:18px 12px; text-align:center; }
+.rp .tile i{ color:var(--rose-deep); font-size:20px; margin-bottom:8px; }
+.rp .tile .label{ font-size:12px; letter-spacing:.14em; text-transform:uppercase; color:var(--muted); }
+.rp .tile .value{ font-family:'Playfair Display',serif; font-size:26px; font-weight:700; }
+.rp .tile .sub{ font-size:13px; color:var(--muted); }
+
+/* Section titles */
+.rp .sec{ display:flex; align-items:center; gap:12px; margin:0 0 18px; }
+.rp .sec h3{ font-family:'Playfair Display',serif; font-weight:700; font-size:24px; margin:0; }
+.rp .sec::after{ content:""; flex:1; height:1px; background:linear-gradient(90deg,var(--line),transparent); }
+.rp .sec i{ color:var(--rose-deep); }
+
+/* Profile chips */
+.rp .profile{ display:flex; flex-wrap:wrap; gap:10px; }
+.rp .profile .chip{ background:var(--blush); }
+
+/* Why cards */
+.rp .why{ background:var(--blush); border:1px solid var(--line); border-radius:18px; padding:16px 18px; height:100%; }
+.rp .why .name{ font-weight:700; }
+.rp .why .dir{ font-size:13px; color:var(--muted); }
+.rp .why .up{ color:var(--rose-deep); } .rp .why .down{ color:#2a9d8f; }
+.rp progress{ width:100%; height:8px; border:0; border-radius:10px; background:#f6e6ec; margin-top:8px; -webkit-appearance:none; appearance:none; }
+.rp progress::-webkit-progress-bar{ background:#f6e6ec; border-radius:10px; }
+.rp progress::-webkit-progress-value{ background:linear-gradient(90deg,#e9a8bc,var(--rose-deep)); border-radius:10px; }
+.rp progress::-moz-progress-bar{ background:linear-gradient(90deg,#e9a8bc,var(--rose-deep)); border-radius:10px; }
+
+/* Signs */
+.rp .sign{ display:inline-block; background:#fde7ee; color:var(--rose-deep); border-radius:50px; padding:8px 16px; font-size:14px; font-weight:600; margin:4px 6px 4px 0; }
+.rp .no-signs{ color:var(--muted); }
+
+/* Care plan */
+.rp .care{ display:grid; grid-template-columns:repeat(2,1fr); gap:12px; }
+.rp .care div{ background:var(--blush); border:1px solid var(--line); border-radius:16px; padding:14px 16px; }
+.rp .plan-title{ font-weight:700; color:var(--accent); margin-bottom:14px; }
+
+/* Disclaimer */
+.rp .note{ background:linear-gradient(135deg,#faf3fb,#f1f9f7); border:1px dashed #e3c6d3; border-radius:18px; padding:16px 20px; color:var(--muted); font-size:14px; line-height:1.7; }
+.rp .note i{ color:var(--gold); margin-right:6px; }
+
+/* Actions */
+.rp .actions{ display:flex; flex-wrap:wrap; gap:12px; justify-content:center; }
+.rp .actions form{ display:inline; margin:0; }
+.rp .btn-rose{
+    background:linear-gradient(135deg,#e08aa6,#b8587a); color:#fff; border:none; border-radius:50px;
+    padding:12px 26px; font-weight:700; box-shadow:0 8px 20px rgba(184,88,122,.25);
+}
+.rp .btn-rose:hover{ color:#fff; transform:translateY(-2px); box-shadow:0 12px 26px rgba(184,88,122,.32); }
+.rp .btn-soft{
+    background:#fff; color:var(--rose-deep); border:2px solid #f0c9d6; border-radius:50px; padding:10px 24px; font-weight:700;
+}
+.rp .btn-soft:hover{ background:#fff0f4; color:var(--rose-deep); border-color:var(--rose); }
+
+.rp .foot{ text-align:center; color:var(--muted); font-size:14px; margin-top:34px; }
+.rp .foot .brand{ font-family:'Playfair Display',serif; font-size:22px; color:var(--plum); }
+
+@media (max-width:720px){
+    .rp .result-grid{ grid-template-columns:1fr; text-align:center; }
+    .rp .tiles{ grid-template-columns:1fr; }
+    .rp .care{ grid-template-columns:1fr; }
+    .rp .panel{ padding:22px; }
+}
+@media print{
+    .no-print{ display:none !important; }
+    body.rp{ background:#fff !important; -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+    .rp .panel,.rp .hero-head{ box-shadow:none; break-inside:avoid; }
+}
+</style>
+</head>
+<body class="rp">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+{% if messages %}
+
+<div class="container mt-3">
+
+{% for category, message in messages %}
+
+<div class="alert alert-{{ category }} alert-dismissible fade show shadow-sm" role="alert">
+
+{{ message }}
+
+<button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+
+</div>
+
+{% endfor %}
+
+</div>
+
+{% endif %}
+{% endwith %}
+
+<!-- NAVBAR -->
+
+<nav class="no-print navbar navbar-expand-lg navbar-light bg-white shadow-sm sticky-top">
+
+    <div class="container">
+
+        <div class="d-flex align-items-center">
+
+<a class="navbar-brand fw-bold d-flex align-items-center" href="/home">
+    <i class="fa-solid fa-hand-holding-heart me-2" style="color:#b8587a;"></i>
+    <span style="color:#4b2e43;">PCOS</span>
+    <span class="ms-1" style="color:#b8587a;">Care</span>
+</a>
+
+</div>
+        <div class="d-flex align-items-center">
+
+            <button
+                class="btn btn-outline-success me-2"
+                data-bs-toggle="offcanvas"
+                data-bs-target="#menu">
+
+                <i class="fa-solid fa-bars"></i>
+
+            </button>
+
+            <a href="/logout" class="btn btn-outline-danger">
+
+                <i class="fa-solid fa-right-from-bracket me-2"></i>
+
+                Logout
+
+            </a>
+
+        </div>
+
+    </div>
+
+</nav>
+
+<!-- SIDEBAR -->
+
+<div class="no-print offcanvas offcanvas-start" tabindex="-1" id="menu">
+
+    <div class="offcanvas-header">
+
+           <a class="navbar-brand fw-bold d-flex align-items-center" href="/home">
+    <i class="fa-solid fa-hand-holding-heart me-2" style="color:#b8587a;"></i>
+    <span style="color:#4b2e43;">PCOS</span>
+    <span class="ms-1" style="color:#b8587a;">Care</span>
+</a>
+        <button
+            class="btn-close"
+            data-bs-dismiss="offcanvas">
+        </button>
+
+    </div>
+
+    <div class="offcanvas-body">
+
+        <a class="btn btn-light w-100 text-start mb-2" href="/home">
+            🏠 Home
+        </a>
+
+        <a class="btn btn-light w-100 text-start mb-2" href="/profile">
+            👤 My Profile
+        </a>
+
+       <a class="btn btn-light w-100 text-start mb-2" href="/settings">
+            ⚙️ Settings
+       </a>
+
+        <a class="btn btn-light w-100 text-start mb-2" href="/history">
+            📊 Prediction History
+        </a>
+
+        <a class="btn btn-light w-100 text-start mb-2" href="/cycle_tracker">
+            🌸 Cycle Tracker
+        </a>
+
+        <a class="btn btn-light w-100 text-start mb-2" href="/diet_planner">
+            🥗 Diet Planner
+        </a>
+
+        <a class="btn btn-light w-100 text-start mb-2" href="/exercise_planner">
+            💪 Exercise Planner
+        </a>
+
+        <a class="btn btn-light w-100 text-start mb-2" href="/doctor_finder">
+            🏥 Doctor Finder
+        </a>
+
+        <a class="btn btn-light w-100 text-start mb-2" href="/home#education">
+            📚 Education
+        </a>
+
+        {% if session.get("user_email") in [
+        "syedaasra2407@gmail.com",
+        "khushigupta46576@gmail.com",
+        "ayushikashyap91427@gmail.com"
+        ] %}
+
+        <a
+            class="btn btn-warning w-100 text-start mb-2"
+            href="/admin">
+
+            👨‍💼 Admin Dashboard
+
+        </a>
+
+        {% endif %}
+
+    </div>
+
+</div>
+
+{% set level = 'high' if risk_percentage >= 70 else ('moderate' if risk_percentage >= 40 else 'low') %}
+{% set health_score = ([100 - risk_percentage, 5] | max) | round(1) %}
+{% set max_imp = (top_features[0].importance if top_features else 1) or 1 %}
+
+<div class="report">
+
+<!-- HEADER -->
+<div class="hero-head">
+    <div class="eyebrow"><i class="fa-solid fa-hand-holding-heart me-2"></i>PCOS Care</div>
+    <h1>Your Wellness Report</h1>
+    <div class="meta">
+        <span class="chip"><i class="fa-regular fa-user"></i>{{ user_data.get('Name') }}</span>
+        <span class="chip"><i class="fa-regular fa-calendar"></i><span id="today"></span></span>
+        <span class="chip"><i class="fa-solid fa-hashtag"></i>Report {{ user_data.get('Age') }}{{ user_data.get('BMI') }}</span>
+    </div>
+</div>
+
+<!-- RESULT -->
+<div class="panel lvl-{{ level }}">
+    <div class="result-grid">
+        <div class="ring">
+            <svg viewBox="0 0 200 200" aria-hidden="true">
+                <circle class="track" cx="100" cy="100" r="84" fill="none" stroke-width="14"></circle>
+                <circle class="bar" cx="100" cy="100" r="84" fill="none" stroke-width="14"
+                        pathLength="100" stroke-dasharray="{{ risk_percentage }} 100"></circle>
+            </svg>
+            <div class="center">
+                <div class="pct">{{ risk_percentage|round(0)|int }}%</div>
+                <div class="cap">Risk score</div>
+            </div>
+        </div>
+
+        <div class="verdict">
+            {% if level == 'high' %}
+            <span class="verdict-tag"><i class="fa-solid fa-heart-circle-exclamation me-1"></i> Higher likelihood</span>
+            <h2>High Risk of PCOS</h2>
+            <p>Based on your symptoms and health information, you have a <strong>High Risk</strong> profile for PCOS. This is an AI-assisted screening result and is not a medical diagnosis. Please speak with a gynecologist, who can guide you gently through the next steps.</p>
+            {% elif level == 'moderate' %}
+            <span class="verdict-tag"><i class="fa-solid fa-triangle-exclamation me-1"></i> Worth watching</span>
+            <h2>Moderate Risk of PCOS</h2>
+            <p>Based on your symptoms and health information, you have a <strong>Moderate Risk</strong> profile for PCOS. This is an AI-assisted screening result and is not a medical diagnosis. Small lifestyle changes and a check-up can help you stay ahead of it.</p>
+            {% else %}
+            <span class="verdict-tag"><i class="fa-solid fa-circle-check me-1"></i> Looking good</span>
+            <h2>Low Risk of PCOS</h2>
+            <p>Your current health profile indicates a <strong>Low Risk</strong> of PCOS. Continue maintaining a healthy lifestyle and regular checkups.</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="tiles">
+        <div class="tile">
+            <i class="fa-solid fa-weight-scale"></i>
+            <div class="label">BMI</div>
+            <div class="value">{{ bmi_val }}</div>
+        </div>
+        <div class="tile">
+            <i class="fa-solid fa-calendar-days"></i>
+            <div class="label">Cycle length</div>
+            <div class="value">{{ user_data.get('Cycle_Length') }} <span class="sub">days</span></div>
+        </div>
+        <div class="tile">
+            <i class="fa-solid fa-spa"></i>
+            <div class="label">Health score</div>
+            <div class="value">{{ health_score }}<span class="sub">/100</span></div>
+            <div class="sub">
+                {% if health_score >= 80 %}Excellent profile{% elif health_score >= 60 %}Needs attention{% else %}Consult a doctor{% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- PROFILE -->
+<div class="panel">
+    <div class="sec"><i class="fa-regular fa-heart"></i><h3>Your Profile</h3></div>
+    <div class="profile">
+        <span class="chip"><i class="fa-regular fa-user"></i>{{ user_data.get('Name') }}</span>
+        <span class="chip"><i class="fa-solid fa-cake-candles"></i>{{ user_data.get('Age') }} years</span>
+        <span class="chip"><i class="fa-solid fa-earth-asia"></i>{{ user_data.get('Country') }}</span>
+        <span class="chip"><i class="fa-solid fa-repeat"></i>Cycle: {{ user_data.get('Cycle_Regularity') }}</span>
+    </div>
+</div>
+
+<!-- WHY -->
+<div class="panel">
+    <div class="sec"><i class="fa-solid fa-wand-magic-sparkles"></i><h3>Why did the AI give this result?</h3></div>
+    <div class="row g-3">
+    {% for item in top_features %}
+        {% set ratio = item.importance / max_imp %}
+        <div class="col-md-6">
+            <div class="why">
+                <div class="name">{{ item.feature }}</div>
+                <div class="dir">
+                    {% if item.direction == 'raises' %}<span class="up"><i class="fa-solid fa-arrow-trend-up me-1"></i>Raises risk</span>
+                    {% elif item.direction == 'lowers' %}<span class="down"><i class="fa-solid fa-arrow-trend-down me-1"></i>Lowers risk</span>{% endif %}
+                    &middot; {% if ratio >= 0.66 %}Strong influence{% elif ratio >= 0.33 %}Moderate influence{% else %}Slight influence{% endif %}
+                </div>
+                <progress value="{{ '%.3f'|format(item.importance) }}" max="{{ '%.3f'|format(max_imp) }}"></progress>
+            </div>
+        </div>
+    {% endfor %}
+    </div>
+
+    <div class="mt-4">
+        <div class="fw-bold mb-2">Signs we noticed</div>
+        {% set ns = namespace(any=false) %}
+        {% if user_data.get('Cycle_Regularity')=="Irregular" %}<span class="sign">Irregular Menstrual Cycle</span>{% set ns.any=true %}{% endif %}
+        {% if bmi_val|float >=25 %}<span class="sign">Elevated BMI</span>{% set ns.any=true %}{% endif %}
+        {% if user_data.get('Acne')=="Yes" %}<span class="sign">Acne</span>{% set ns.any=true %}{% endif %}
+        {% if user_data.get('Hair_Thinning')=="Yes" %}<span class="sign">Hair Thinning</span>{% set ns.any=true %}{% endif %}
+        {% if user_data.get('Skin_Darkening')=="Yes" %}<span class="sign">Skin Darkening</span>{% set ns.any=true %}{% endif %}
+        {% if user_data.get('Rapid_Weight_Gain')=="Yes" %}<span class="sign">Rapid Weight Gain</span>{% set ns.any=true %}{% endif %}
+        {% if not ns.any %}<span class="no-signs">No major signs flagged from your answers.</span>{% endif %}
+    </div>
+</div>
+
+<!-- RECOMMENDATIONS -->
+<div class="panel lvl-{{ level }}">
+    <div class="sec"><i class="fa-solid fa-stethoscope"></i><h3>Personalized Recommendations</h3></div>
+
+    {% if risk_percentage >= 40 %}
+    <div class="plan-title"><i class="fa-solid fa-heart-circle-exclamation me-2"></i>{% if risk_percentage >= 70 %}High Risk Care Plan{% else %}Moderate Risk Care Plan{% endif %}</div>
+    <div class="care">
+        <div>🩺 Consult a gynecologist as soon as possible.</div>
+        <div>🧪 Get hormonal blood tests and a pelvic ultrasound.</div>
+        <div>🥗 Follow a low-GI, high-fiber diet.</div>
+        <div>🏃 Exercise for 30–45 minutes daily.</div>
+        <div>🧘 Practice yoga or meditation to reduce stress.</div>
+        <div>📅 Track your menstrual cycle every month.</div>
+        <div>💧 Drink at least 2–3 liters of water every day.</div>
+    </div>
+    {% else %}
+    <div class="plan-title"><i class="fa-solid fa-circle-check me-2"></i>Healthy Lifestyle Plan</div>
+    <div class="care">
+        <div>🥗 Maintain a balanced, nutritious diet.</div>
+        <div>🏃 Continue exercising regularly.</div>
+        <div>😴 Sleep for 7–8 hours every night.</div>
+        <div>💧 Stay hydrated throughout the day.</div>
+        <div>📅 Track your menstrual cycle regularly.</div>
+        <div>🩺 Schedule annual health checkups.</div>
+    </div>
+    {% endif %}
+
+    <div class="note mt-4">
+        <i class="fa-solid fa-feather-pointed"></i><strong>A gentle reminder:</strong> This report is generated using Artificial Intelligence and is intended for screening purposes only. It should not be considered a medical diagnosis. Please consult a qualified healthcare professional.
+    </div>
+</div>
+
+<!-- ACTIONS -->
+<div class="panel no-print">
+    <div class="sec"><i class="fa-solid fa-gears"></i><h3>Quick Actions</h3></div>
+    <div class="actions">
+        <a href="/home" class="btn btn-rose"><i class="fa-solid fa-rotate me-2"></i>Check Again</a>
+        <button type="button" onclick="window.print()" class="btn btn-rose"><i class="fa-solid fa-file-pdf me-2"></i>Download Report</button>
+        <form action="/email_report" method="POST">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <button class="btn btn-rose"><i class="fa-solid fa-envelope me-2"></i>Email My Report</button>
+        </form>
+        <a href="/history" class="btn btn-soft"><i class="fa-solid fa-clock-rotate-left me-2"></i>View History</a>
+        <a href="/diet_planner" class="btn btn-soft"><i class="fa-solid fa-utensils me-2"></i>Diet Plan</a>
+        <a href="/exercise_planner" class="btn btn-soft"><i class="fa-solid fa-dumbbell me-2"></i>Exercise Plan</a>
+    </div>
+</div>
+
+<div class="foot">
+    <div class="brand"><i class="fa-solid fa-heart-pulse me-2" style="color:#b8587a;"></i>PCOS Care</div>
+    <p class="mb-1">AI-powered PCOS Risk Assessment &amp; Lifestyle Guidance System</p>
+    <p class="small mb-1">This report is generated using Machine Learning and Explainable AI (XAI). It is intended for educational and screening purposes only and should not replace professional medical advice.</p>
+    <p class="small mb-0">© 2026 PCOS Care • Final Year Major Project</p>
+</div>
+
+</div>
+
+<script>
+document.getElementById("today").textContent = new Date().toLocaleDateString(undefined, { day: "numeric", month: "long", year: "numeric" });
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+// Only the small pop-up messages close by themselves
+setTimeout(function () {
+    document.querySelectorAll(".alert-dismissible").forEach(function (alert) {
+        bootstrap.Alert.getOrCreateInstance(alert).close();
+    });
+}, 4000);
+</script>
+</body>
+</html>

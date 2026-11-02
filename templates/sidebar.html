@@ -1,0 +1,159 @@
+
+<!-- SHARED PCOS CARE SIDEBAR -->
+
+<div class="offcanvas offcanvas-start pcos-sidebar"
+     tabindex="-1"
+     id="menu"
+     aria-labelledby="pcosSidebarLabel">
+
+    <!-- Sidebar Header -->
+    <div class="offcanvas-header pcos-sidebar-header">
+
+        <a class="pcos-sidebar-brand"
+           href="{{ url_for('home') }}"
+           id="pcosSidebarLabel">
+
+            <span class="pcos-brand-icon">
+                <i class="fa-solid fa-hand-holding-heart"></i>
+            </span>
+
+            <span class="pcos-brand-text">
+                <strong>
+                    <span style="color: #4b2e43;">PCOS</span>
+                    <span style="color: #b8587a;">Care</span>
+                </strong>
+                <small>Women's Wellness</small>
+            </span>
+
+        </a>
+
+        <button type="button"
+                class="btn-close"
+                data-bs-dismiss="offcanvas"
+                aria-label="Close menu">
+        </button>
+
+    </div>
+
+    <!-- Sidebar Body -->
+    <div class="offcanvas-body pcos-sidebar-body">
+
+        <!-- Main Menu -->
+        <div class="pcos-nav-label">MAIN MENU</div>
+
+        <nav class="pcos-nav" aria-label="Main navigation">
+
+            <a class="pcos-nav-link {% if active_page == 'home' %}active{% endif %}"
+               href="{{ url_for('home') }}"
+               {% if active_page == 'home' %}aria-current="page"{% endif %}>
+                <i class="fa-solid fa-house"></i>
+                <span>Home</span>
+            </a>
+
+            <a class="pcos-nav-link {% if active_page == 'profile' %}active{% endif %}"
+               href="/profile"
+               {% if active_page == 'profile' %}aria-current="page"{% endif %}>
+                <i class="fa-regular fa-user"></i>
+                <span>My Profile</span>
+            </a>
+
+            <a class="pcos-nav-link {% if active_page == 'history' %}active{% endif %}"
+               href="/history"
+               {% if active_page == 'history' %}aria-current="page"{% endif %}>
+                <i class="fa-solid fa-chart-line"></i>
+                <span>Prediction History</span>
+            </a>
+
+            <a class="pcos-nav-link {% if active_page == 'cycle_tracker' %}active{% endif %}"
+               href="/cycle_tracker"
+               {% if active_page == 'cycle_tracker' %}aria-current="page"{% endif %}>
+                <i class="fa-regular fa-calendar-days"></i>
+                <span>Cycle Tracker</span>
+            </a>
+
+            <a class="pcos-nav-link {% if active_page == 'diet_planner' %}active{% endif %}"
+               href="/diet_planner"
+               {% if active_page == 'diet_planner' %}aria-current="page"{% endif %}>
+                <i class="fa-solid fa-utensils"></i>
+                <span>Diet Planner</span>
+            </a>
+
+            <a class="pcos-nav-link {% if active_page == 'exercise_planner' %}active{% endif %}"
+               href="/exercise_planner"
+               {% if active_page == 'exercise_planner' %}aria-current="page"{% endif %}>
+                <i class="fa-solid fa-person-walking"></i>
+                <span>Exercise Planner</span>
+            </a>
+
+            <a class="pcos-nav-link {% if active_page == 'doctor_finder' %}active{% endif %}"
+               href="/doctor_finder"
+               {% if active_page == 'doctor_finder' %}aria-current="page"{% endif %}>
+                <i class="fa-solid fa-user-doctor"></i>
+                <span>Doctor Finder</span>
+            </a>
+
+            <a class="pcos-nav-link {% if active_page == 'education' %}active{% endif %}"
+               href="/education"
+               {% if active_page == 'education' %}aria-current="page"{% endif %}>
+                <i class="fa-solid fa-book-open"></i>
+                <span>PCOS Education</span>
+            </a>
+
+        </nav>
+
+        <div class="pcos-nav-divider"></div>
+
+        <!-- Preferences -->
+        <div class="pcos-nav-label">PREFERENCES</div>
+
+        <nav class="pcos-nav" aria-label="Preferences">
+
+            <a class="pcos-nav-link {% if active_page == 'settings' %}active{% endif %}"
+               href="/settings"
+               {% if active_page == 'settings' %}aria-current="page"{% endif %}>
+                <i class="fa-solid fa-sliders"></i>
+                <span>Settings</span>
+            </a>
+
+        </nav>
+
+        <!-- Admin Section -->
+        {% if session.get("user_email") in [
+            "syedaasra2407@gmail.com",
+            "khushigupta46576@gmail.com",
+            "ayushikashyap91427@gmail.com"
+        ] %}
+
+        <div class="pcos-nav-divider"></div>
+
+        <div class="pcos-nav-label">ADMINISTRATION</div>
+
+        <nav class="pcos-nav" aria-label="Administration">
+
+            <a class="pcos-nav-link pcos-admin-link {% if active_page == 'admin' %}active{% endif %}"
+               href="/admin"
+               {% if active_page == 'admin' %}aria-current="page"{% endif %}>
+                <i class="fa-solid fa-shield-halved"></i>
+                <span>Admin Dashboard</span>
+            </a>
+
+        </nav>
+
+        {% endif %}
+
+        <!-- Sidebar Footer -->
+        <div class="pcos-sidebar-footer">
+
+            <div class="pcos-sidebar-footer-icon">
+                <i class="fa-solid fa-hand-holding-heart"></i>
+            </div>
+
+            <div>
+                <strong>PCOS Care</strong>
+                <small>Your wellness, your journey.</small>
+            </div>
+
+        </div>
+
+    </div>
+</div>

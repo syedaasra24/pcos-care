@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Diet Planner | PCOS Care</title>
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+<link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<style>
+
+body{
+background:#fff5f7;
+font-family:Arial,sans-serif;
+}
+
+.main{
+max-width:950px;
+margin:40px auto;
+background:#fff;
+padding:35px;
+border-radius:20px;
+box-shadow:0 10px 30px rgba(0,0,0,.08);
+}
+
+.cardx{
+background:#f8f9fa;
+border:1px solid #ddd;
+border-radius:15px;
+padding:20px;
+height:100%;
+transition:.3s;
+}
+
+.cardx:hover{
+transform:translateY(-4px);
+}
+
+</style>
+
+<link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{{ url_for('static', filename='theme.css') }}">
+</head>
+
+<body>
+{% with messages = get_flashed_messages(with_categories=true) %}
+{% if messages %}
+
+<div class="container mt-3">
+
+{% for category, message in messages %}
+
+<div class="alert alert-{{ category }} alert-dismissible fade show shadow-sm" role="alert">
+
+{{ message }}
+
+<button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+
+</div>
+
+{% endfor %}
+
+</div>
+
+{% endif %}
+{% endwith %}
+<nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm sticky-top">
+
+<div class="container">
+
+    
+<a class="navbar-brand fw-bold d-flex align-items-center" href="/home">
+    <i class="fa-solid fa-hand-holding-heart me-2" style="color:#b8587a;"></i>
+    <span style="color:#4b2e43;">PCOS</span>
+    <span class="ms-1" style="color:#b8587a;">Care</span>
+</a>
+
+<div>
+
+<button
+class="btn btn-outline-success me-2"
+data-bs-toggle="offcanvas"
+data-bs-target="#menu">
+
+<i class="fa-solid fa-bars"></i>
+
+</button>
+
+<a href="/logout"
+class="btn btn-danger">
+
+Logout
+
+</a>
+
+</div>
+
+</div>
+
+</nav>
+
+<!-- Sidebar -->
+<div class="offcanvas offcanvas-start" tabindex="-1" id="menu">
+
+    <div class="offcanvas-header">
+
+        <a class="navbar-brand fw-bold d-flex align-items-center" href="/home">
+            <i class="fa-solid fa-hand-holding-heart me-2" style="color:#b8587a;"></i>
+            <span style="color:#4b2e43;">PCOS</span>
+            <span class="ms-1" style="color:#b8587a;">Care</span>
+        </a>
+
+        <button type="button"
+                class="btn-close"
+                data-bs-dismiss="offcanvas"></button>
+
+    </div>
+
+    <div class="offcanvas-body">
+
+        <a class="btn btn-light w-100 text-start mb-2" href="/home">🏠 Home</a>
+
+        <a class="btn btn-light w-100 text-start mb-2" href="/profile">👤 My Profile</a>
+
+        <a class="btn btn-light w-100 text-start mb-2" href="/settings">⚙️ Settings</a>
+
+        <a class="btn btn-light w-100 text-start mb-2" href="/history">📊 Prediction History</a>
+
+        <a class="btn btn-light w-100 text-start mb-2" href="/cycle_tracker">🌸 Cycle Tracker</a>
+
+        <a class="btn btn-success w-100 text-start mb-2" href="/diet_planner">🥗 Diet Planner</a>
+
+        <a class="btn btn-light w-100 text-start mb-2" href="/exercise_planner">💪 Exercise Planner</a>
+
+        <a class="btn btn-light w-100 text-start mb-2" href="/doctor_finder">🏥 Doctor Finder</a>
+
+        <a class="btn btn-light w-100 text-start mb-2" href="/education">📚 PCOS Education</a>
+
+        {% if session.get("user_email") in [
+        "syedaasra2407@gmail.com",
+        "khushigupta46576@gmail.com",
+        "ayushikashyap91427@gmail.com"
+        ] %}
+
+        <a class="btn btn-warning w-100 text-start" href="/admin">
+            👨‍💼 Admin Dashboard
+        </a>
+
+        {% endif %}
+
+    </div>
+
+</div>
+
+<div class="container">
+
+<div class="main">
+<h2 class="text-center text-success mb-3">
+
+<i class="fa-solid fa-utensils me-2"></i>
+
+Personalized Diet Planner
+
+</h2>
+
+<p class="text-center text-muted mb-4">
+
+Receive a healthy diet plan tailored to your BMI and lifestyle.
+
+</p>
+<form action="/generate_diet" method="POST">
+<input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+<div class="row g-3">
+<div class="col-md-4">
+<label class="form-label">Your BMI</label>
+<input type="number" step="0.1" min="10" max="70" name="bmi" class="form-control" placeholder="e.g. 24.5" value="{{ prefill_bmi or '' }}" required>
+{% if prefill_bmi %}<div class="form-text">Filled from your latest screening.</div>{% endif %}
+</div>
+<div class="col-md-4">
+<label class="form-label">Food preference</label>
+<select name="preference" class="form-select">
+{% for p in ['Vegetarian','Eggetarian','Non-vegetarian','Vegan'] %}
+<option value="{{ p }}" {% if form_pref==p %}selected{% endif %}>{{ p }}</option>
+{% endfor %}
+</select>
+</div>
+<div class="col-md-4 d-flex align-items-end">
+<div class="form-check">
+<input class="form-check-input" type="checkbox" name="insulin_issue" value="yes" id="insulin" {% if form_insulin %}checked{% endif %}>
+<label class="form-check-label" for="insulin">I have insulin resistance / diabetes</label>
+</div>
+</div>
+<div class="col-12">
+<button class="btn btn-success w-100"><i class="fa-solid fa-wand-magic-sparkles"></i> Generate Diet Plan</button>
+</div>
+</div>
+</form>
+
+{% if plan %}
+<hr>
+{% if high_risk %}
+<div class="alert alert-warning">Your latest screening showed a higher PCOS risk. See a gynecologist to confirm; this plan is general lifestyle guidance, not treatment.</div>
+{% endif %}
+<div class="alert alert-secondary">
+<h4>BMI Category : {{ plan.category }}</h4>
+<p class="mb-0"><strong>BMI :</strong> {{ bmi }} &nbsp;|&nbsp; <strong>Preference :</strong> {{ plan.preference }}</p>
+</div>
+
+<div class="row g-3">
+<div class="col-md-6"><div class="cardx"><h5>🍳 Breakfast</h5><p>{{ plan.breakfast }}</p></div></div>
+<div class="col-md-6"><div class="cardx"><h5>🍛 Lunch</h5><p>{{ plan.lunch }}</p></div></div>
+<div class="col-md-6"><div class="cardx"><h5>🍎 Snacks</h5><p>{{ plan.snacks }}</p></div></div>
+<div class="col-md-6"><div class="cardx"><h5>🥗 Dinner</h5><p>{{ plan.dinner }}</p></div></div>
+</div>
+
+<div class="alert alert-info mt-4">
+<b>Your focus points</b>
+<ul class="mb-0">
+{% for n in plan.notes %}<li>{{ n }}</li>{% endfor %}
+</ul>
+</div>
+<p class="text-muted small">This is general guidance and not a substitute for advice from a doctor or registered dietitian.</p>
+{% endif %}
+
+<div class="text-center mt-4">
+
+<a href="/home"
+class="btn btn-primary btn-lg px-4 me-2">
+
+<i class="fa-solid fa-house me-2"></i>
+
+Home
+
+</a>
+
+<a href="/cycle_tracker"
+class="btn btn-success btn-lg px-4">
+
+<i class="fa-solid fa-calendar-days me-2"></i>
+
+Cycle Tracker
+
+</a>
+
+</div>
+
+</div>
+</div>
+</body>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+setTimeout(function () {
+    document.querySelectorAll(".alert-dismissible").forEach(function (alert) {
+        bootstrap.Alert.getOrCreateInstance(alert).close();
+    });
+}, 4000);
+</script>
+</html>

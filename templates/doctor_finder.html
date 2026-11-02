@@ -1,0 +1,477 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Doctor Finder | PCOS Care</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='theme.css') }}">
+
+    <style>
+        :root {
+            --rose: #b8587a;
+            --plum: #4b2e43;
+            --pink-bg: #fff5f7;
+            --light-rose: #fce8ef;
+            --muted: #786b75;
+            --border: #f0dce5;
+        }
+
+        body {
+            background: var(--pink-bg);
+            color: var(--plum);
+            font-family: 'Quicksand', sans-serif;
+            min-height: 100vh;
+        }
+
+        .navbar {
+            border-bottom: 1px solid var(--border);
+        }
+
+        .brand-icon,
+        .brand-accent {
+            color: var(--rose);
+        }
+
+        .brand-name {
+            color: var(--plum);
+            font-weight: 700;
+        }
+
+        .btn-rose {
+            background: var(--rose);
+            border: 1px solid var(--rose);
+            color: #fff;
+            font-weight: 700;
+        }
+
+        .btn-rose:hover {
+            background: var(--plum);
+            border-color: var(--plum);
+            color: #fff;
+        }
+
+        .btn-outline-rose {
+            color: var(--rose);
+            border: 1px solid var(--rose);
+            font-weight: 600;
+        }
+
+        .btn-outline-rose:hover {
+            background: var(--rose);
+            color: #fff;
+        }
+
+        .menu-link {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 11px 14px;
+            margin-bottom: 8px;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            background: #fff;
+            color: var(--plum);
+            text-decoration: none;
+            font-weight: 600;
+            transition: .2s ease;
+        }
+
+        .menu-link i {
+            width: 20px;
+            text-align: center;
+            color: var(--rose);
+        }
+
+        .menu-link:hover,
+        .menu-link.active {
+            background: var(--light-rose);
+            border-color: #e9b8ca;
+            color: var(--plum);
+        }
+
+        .page-header {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+
+        .page-icon {
+            width: 66px;
+            height: 66px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 16px;
+            border-radius: 19px;
+            background: var(--light-rose);
+            color: var(--rose);
+            font-size: 27px;
+        }
+
+        .page-title,
+        .section-title {
+            color: var(--plum);
+            font-weight: 700;
+        }
+
+        .search-panel {
+            background: #fff;
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 27px;
+            box-shadow: 0 8px 25px rgba(75, 46, 67, .05);
+            margin-bottom: 30px;
+        }
+
+        .form-label {
+            color: var(--plum);
+            font-weight: 700;
+        }
+
+        .form-control {
+            padding: 13px 15px;
+            border: 1px solid #e7d8e0;
+            border-radius: 11px;
+        }
+
+        .form-control:focus {
+            border-color: var(--rose);
+            box-shadow: 0 0 0 .2rem rgba(184, 88, 122, .13);
+        }
+
+        .card-doctor {
+            height: 100%;
+            padding: 30px 24px;
+            text-align: center;
+            background: #fff;
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            box-shadow: 0 8px 25px rgba(75, 46, 67, .05);
+            transition: transform .2s ease, box-shadow .2s ease;
+        }
+
+        .card-doctor:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 14px 30px rgba(75, 46, 67, .09);
+        }
+
+        .doctor-icon {
+            width: 76px;
+            height: 76px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            border-radius: 22px;
+            background: var(--light-rose);
+            color: var(--rose);
+            font-size: 32px;
+        }
+
+        .card-doctor h2 {
+            color: var(--plum);
+            font-size: 1.25rem;
+            font-weight: 700;
+        }
+
+        .card-doctor p {
+            color: var(--muted);
+            line-height: 1.7;
+        }
+
+        .feature-note {
+            padding: 20px;
+            border: 1px solid #f0d5e0;
+            border-radius: 15px;
+            background: #fff5f8;
+            color: var(--plum);
+        }
+
+        .feature-note i {
+            color: var(--rose);
+        }
+
+        .page-footer {
+            margin: 28px 0 10px;
+            color: var(--muted);
+            font-size: .85rem;
+            text-align: center;
+        }
+
+        @media (max-width: 576px) {
+            .page-title {
+                font-size: 1.6rem;
+            }
+
+            .search-panel {
+                padding: 20px 16px;
+            }
+
+            .card-doctor {
+                padding: 25px 18px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+{% if messages %}
+<div class="container mt-3">
+    {% for category, message in messages %}
+    <div class="alert alert-{{ category }} alert-dismissible fade show shadow-sm" role="alert">
+        {{ message }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    {% endfor %}
+</div>
+{% endif %}
+{% endwith %}
+
+<nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm sticky-top">
+    <div class="container">
+        <a class="navbar-brand fw-bold d-flex align-items-center" href="/home">
+            <i class="fa-solid fa-hand-holding-heart brand-icon me-2"></i>
+            <span class="brand-name">PCOS</span>
+            <span class="brand-accent ms-1">Care</span>
+        </a>
+
+        <div class="d-flex align-items-center gap-2">
+            <button
+                type="button"
+                class="btn btn-outline-rose"
+                data-bs-toggle="offcanvas"
+                data-bs-target="#menu"
+                aria-controls="menu"
+                aria-label="Open navigation menu">
+                <i class="fa-solid fa-bars"></i>
+            </button>
+
+            <a href="/logout" class="btn btn-rose">
+                <i class="fa-solid fa-right-from-bracket me-1"></i>
+                Logout
+            </a>
+        </div>
+    </div>
+</nav>
+
+<!-- Sidebar navigation -->
+<div class="offcanvas offcanvas-start" tabindex="-1" id="menu" aria-labelledby="menuLabel">
+    <div class="offcanvas-header">
+        <a class="navbar-brand fw-bold d-flex align-items-center" href="/home" id="menuLabel">
+            <i class="fa-solid fa-hand-holding-heart brand-icon me-2"></i>
+            <span class="brand-name">PCOS</span>
+            <span class="brand-accent ms-1">Care</span>
+        </a>
+
+        <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close menu"></button>
+    </div>
+
+    <div class="offcanvas-body">
+        <a class="menu-link" href="/home">
+            <i class="fa-solid fa-house"></i> Home
+        </a>
+
+        <a class="menu-link" href="/profile">
+            <i class="fa-solid fa-user"></i> My Profile
+        </a>
+
+        <a class="menu-link" href="/settings">
+            <i class="fa-solid fa-gear"></i> Settings
+        </a>
+
+        <a class="menu-link" href="/history">
+            <i class="fa-solid fa-chart-line"></i> Prediction History
+        </a>
+
+        <a class="menu-link" href="/cycle_tracker">
+            <i class="fa-solid fa-calendar-days"></i> Cycle Tracker
+        </a>
+
+        <a class="menu-link" href="/diet_planner">
+            <i class="fa-solid fa-utensils"></i> Diet Planner
+        </a>
+
+        <a class="menu-link" href="/exercise_planner">
+            <i class="fa-solid fa-dumbbell"></i> Exercise Planner
+        </a>
+
+        <a class="menu-link active" href="/doctor_finder" aria-current="page">
+            <i class="fa-solid fa-user-doctor"></i> Doctor Finder
+        </a>
+
+        <a class="menu-link" href="/education">
+            <i class="fa-solid fa-book-open"></i> PCOS Education
+        </a>
+
+        {% if session.get("user_email") in [
+            "syedaasra2407@gmail.com",
+            "khushigupta46576@gmail.com",
+            "ayushikashyap91427@gmail.com"
+        ] %}
+        <a class="menu-link" href="/admin">
+            <i class="fa-solid fa-user-shield"></i> Admin Dashboard
+        </a>
+        {% endif %}
+    </div>
+</div>
+
+<main class="container py-5">
+
+    <header class="page-header">
+        <div class="page-icon">
+            <i class="fa-solid fa-user-doctor"></i>
+        </div>
+
+        <h1 class="page-title">Doctor Finder</h1>
+
+        <p class="text-muted mb-0">
+            Find gynecologists, women's health specialists, and hospitals in your city.
+        </p>
+    </header>
+
+    <section class="search-panel" aria-labelledby="search-title">
+        <h2 id="search-title" class="section-title fs-5 mb-2">
+            <i class="fa-solid fa-location-dot me-2" style="color:#b8587a;"></i>
+            Search by City
+        </h2>
+
+        <p class="text-muted mb-4">
+            Enter a city to find relevant healthcare services using Google Maps.
+        </p>
+
+        <form action="/doctor_search" method="POST" id="doctorSearchForm">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+            <div class="row g-3 align-items-end">
+                <div class="col-md-9">
+                    <label for="city" class="form-label">City or location</label>
+                    <input
+                        type="text"
+                        id="city"
+                        name="city"
+                        class="form-control form-control-lg"
+                        placeholder="e.g. Patna, Delhi, Hyderabad"
+                        maxlength="100"
+                        autocomplete="address-level2"
+                        required
+                    >
+                </div>
+
+                <div class="col-md-3">
+                    <button type="submit" class="btn btn-rose btn-lg w-100">
+                        <i class="fa-solid fa-magnifying-glass me-2"></i>
+                        Search
+                    </button>
+                </div>
+            </div>
+        </form>
+
+        <div class="mt-3 small text-muted">
+            <i class="fa-solid fa-circle-info me-1"></i>
+            Search results and provider details are supplied by Google Maps.
+            Please verify credentials, availability, and contact details before visiting.
+        </div>
+    </section>
+
+    <div class="row g-4">
+
+        <div class="col-md-6">
+            <article class="card-doctor">
+                <div class="doctor-icon">
+                    <i class="fa-solid fa-user-doctor"></i>
+                </div>
+
+                <h2 class="mb-3">Find Gynecologists</h2>
+
+                <p>
+                    Search for gynecologists and women's health specialists who can
+                    assess irregular periods, PCOS symptoms, and related concerns.
+                </p>
+
+                <a
+                    href="https://www.google.com/maps/search/gynecologist+near+me"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="btn btn-rose w-100 mt-2">
+                    <i class="fa-solid fa-map-location-dot me-2"></i>
+                    Find Gynecologists
+                </a>
+            </article>
+        </div>
+
+        <div class="col-md-6">
+            <article class="card-doctor">
+                <div class="doctor-icon">
+                    <i class="fa-solid fa-hospital"></i>
+                </div>
+
+                <h2 class="mb-3">Find Hospitals</h2>
+
+                <p>
+                    Explore nearby hospitals and healthcare facilities for
+                    consultations, tests, and further medical evaluation.
+                </p>
+
+                <a
+                    href="https://www.google.com/maps/search/hospital+near+me"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="btn btn-outline-rose w-100 mt-2">
+                    <i class="fa-solid fa-map-location-dot me-2"></i>
+                    Find Hospitals
+                </a>
+            </article>
+        </div>
+
+    </div>
+
+    <div class="feature-note mt-4">
+        <h2 class="section-title fs-6 mb-2">
+            <i class="fa-solid fa-shield-heart me-2"></i>
+            A helpful reminder
+        </h2>
+
+        <p class="mb-0">
+            PCOS symptoms can vary from person to person. A qualified healthcare
+            professional can help assess your symptoms and recommend appropriate
+            care. PCOS Care does not verify individual doctors or hospitals.
+        </p>
+    </div>
+
+    <div class="d-flex flex-wrap justify-content-center gap-2 mt-4">
+        <a href="/home" class="btn btn-outline-rose px-4">
+            <i class="fa-solid fa-house me-2"></i>Home
+        </a>
+
+        <a href="/education" class="btn btn-rose px-4">
+            <i class="fa-solid fa-book-open me-2"></i>PCOS Education
+        </a>
+    </div>
+
+    <footer class="page-footer">
+        PCOS Care provides general health information and is not a substitute for professional medical advice.
+    </footer>
+
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+document.querySelectorAll(".alert-dismissible").forEach(function (alert) {
+    window.setTimeout(function () {
+        if (document.body.contains(alert)) {
+            bootstrap.Alert.getOrCreateInstance(alert).close();
+        }
+    }, 4000);
+});
+</script>
+
+</body>
+</html>

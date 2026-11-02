@@ -1,0 +1,124 @@
+/* 1. Base Theme - PCOS Teal */
+body {
+    background-color: #fff5f7; /* Light Mint Background */
+    font-family: 'Quicksand', sans-serif;
+    color: #4b2e43; /* Dark Slate Text */
+}
+
+/* Color Variables */
+:root {
+    --primary: #b8587a;       /* The Teal Color */
+    --primary-dark: #9d4766;
+    --light-bg: #ffffff;
+}
+
+.text-teal { color: var(--primary) !important; }
+.bg-teal { background-color: var(--primary); }
+
+/* 2. Navbar */
+.navbar {
+    background: white !important;
+    box-shadow: 0 4px 20px rgba(184,88,122, 0.08);
+    padding: 15px 0;
+}
+
+.navbar-brand strong {
+    font-weight: 700;
+    color: #4b2e43;
+}
+
+.btn-logout {
+    border: 1px solid var(--primary);
+    color: var(--primary);
+    transition: 0.3s;
+}
+
+.btn-logout:hover {
+    background-color: var(--primary);
+    color: white;
+}
+
+/* 3. Cards */
+.form-card, .edu-card, .login-card, .result-card {
+    background: white;
+    border-radius: 20px;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.05);
+    border: 1px solid #f6dfe6;
+    transition: transform 0.3s ease;
+}
+
+.edu-card:hover {
+    transform: translateY(-5px);
+    border-color: var(--primary);
+}
+
+.icon-box i {
+    color: var(--primary);
+    background: #fff0f4;
+    padding: 20px;
+    border-radius: 50%;
+}
+
+/* 4. Form Inputs */
+.form-control, .form-select {
+    border-radius: 12px;
+    border: 1px solid #f0c9d6;
+    padding: 12px;
+}
+
+.form-control:focus, .form-select:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 0.25rem rgba(184,88,122, 0.15);
+}
+
+/* 5. Buttons - THE TEAL UPDATE */
+.btn-teal {
+    background: linear-gradient(135deg, #b8587a, #9d4766);
+    color: white;
+    border: none;
+    border-radius: 50px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.btn-teal:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(184,88,122, 0.3);
+    color: white;
+}
+
+.btn-outline-teal {
+    border: 2px solid var(--primary);
+    color: var(--primary);
+    border-radius: 50px;
+    font-weight: 600;
+}
+
+.btn-outline-teal:hover {
+    background-color: var(--primary);
+    color: white;
+}
+
+/* 6. Chatbot & Footer */
+.chat-btn {
+    position: fixed; bottom: 30px; right: 30px; width: 60px; height: 60px; font-size: 24px; z-index: 1000;
+    background-color: var(--primary); color: white; border: none;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+}
+.chat-widget {
+    position: fixed; bottom: 100px; right: 30px; width: 320px; 
+    background: white; border-radius: 15px; z-index: 1000; display: none; 
+    box-shadow: 0 10px 40px rgba(0,0,0,0.15); border: 1px solid #f0c9d6;
+    overflow: hidden;
+}
+
+footer {
+    background-color: #4b2e43;
+    color: white;
+    padding: 50px 0 20px 0;
+    margin-top: 80px;
+}
+footer h5 { color: #b8587a; font-weight: 700; margin-bottom: 20px; }
+footer a { color: #f3c4d3; text-decoration: none; transition: 0.3s; }
+footer a:hover { color: white; padding-left: 5px; }
+footer ul li { margin-bottom: 10px; }

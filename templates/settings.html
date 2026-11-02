@@ -1,0 +1,711 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Settings | PCOS Care</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+          rel="stylesheet">
+
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&display=swap"
+          rel="stylesheet">
+
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='theme.css') }}">
+
+    <style>
+        :root {
+            --rose: #b8587a;
+            --rose-dark: #9d4163;
+            --plum: #4b2e43;
+            --pink-bg: #fff5f7;
+            --pink-light: #fff0f4;
+            --border: #f0dfe6;
+            --text: #443540;
+            --muted: #827581;
+        }
+
+        body {
+            background: var(--pink-bg);
+            color: var(--text);
+            font-family: 'Quicksand', sans-serif;
+            min-height: 100vh;
+        }
+
+        .navbar {
+            border-bottom: 1px solid var(--border);
+        }
+
+        .brand-name {
+            color: var(--plum);
+            font-size: 1.3rem;
+            font-weight: 700;
+        }
+
+        .brand-name span,
+        .brand-icon {
+            color: var(--rose);
+        }
+
+        .btn-rose {
+            background: var(--rose);
+            color: #fff;
+            border: 1px solid var(--rose);
+            border-radius: 10px;
+            font-weight: 700;
+        }
+
+        .btn-rose:hover {
+            background: var(--rose-dark);
+            color: #fff;
+        }
+
+        .btn-outline-rose {
+            border: 1px solid var(--rose);
+            color: var(--rose);
+            border-radius: 10px;
+            font-weight: 700;
+        }
+
+        .btn-outline-rose:hover {
+            background: var(--rose);
+            color: #fff;
+        }
+
+        .page-wrapper {
+            max-width: 1080px;
+            margin: 35px auto 55px;
+            padding: 0 18px;
+        }
+
+        .page-heading {
+            margin-bottom: 25px;
+        }
+
+        .page-heading h1 {
+            color: var(--plum);
+            font-size: clamp(1.7rem, 4vw, 2.2rem);
+            font-weight: 700;
+        }
+
+        .page-heading p {
+            color: var(--muted);
+            margin-bottom: 0;
+        }
+
+        .settings-intro {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+            padding: 24px;
+            margin-bottom: 25px;
+            background: linear-gradient(120deg, #fff, var(--pink-light));
+            border: 1px solid var(--border);
+            border-radius: 18px;
+        }
+
+        .intro-icon {
+            width: 60px;
+            height: 60px;
+            flex-shrink: 0;
+            display: grid;
+            place-items: center;
+            border-radius: 17px;
+            background: #f8dce6;
+            color: var(--rose-dark);
+            font-size: 1.5rem;
+        }
+
+        .settings-section {
+            margin-bottom: 25px;
+            padding: 25px;
+            background: #fff;
+            border: 1px solid var(--border);
+            border-radius: 18px;
+            box-shadow: 0 6px 22px rgba(75, 46, 67, 0.045);
+        }
+
+        .section-heading {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .section-icon {
+            display: grid;
+            place-items: center;
+            width: 44px;
+            height: 44px;
+            flex-shrink: 0;
+            border-radius: 13px;
+            background: var(--pink-light);
+            color: var(--rose);
+            font-size: 1.1rem;
+        }
+
+        .section-heading h2 {
+            color: var(--plum);
+            font-size: 1.15rem;
+            font-weight: 700;
+            margin: 0;
+        }
+
+        .section-heading p {
+            color: var(--muted);
+            font-size: 0.88rem;
+            margin: 4px 0 0;
+        }
+
+        .setting-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 18px;
+            padding: 18px 0;
+            border-top: 1px solid #f3e8ed;
+        }
+
+        .setting-row:first-of-type {
+            border-top: 0;
+        }
+
+        .setting-copy {
+            min-width: 0;
+        }
+
+        .setting-copy h3 {
+            color: var(--text);
+            font-size: 0.98rem;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .setting-copy p {
+            color: var(--muted);
+            font-size: 0.88rem;
+            margin-bottom: 0;
+            line-height: 1.6;
+        }
+
+        .setting-action {
+            flex-shrink: 0;
+        }
+
+        .info-note {
+            padding: 14px 16px;
+            background: #fff8fb;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            color: var(--muted);
+            font-size: 0.86rem;
+            line-height: 1.65;
+        }
+
+        .info-note i {
+            color: var(--rose);
+        }
+
+        .status-label {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            padding: 7px 11px;
+            border-radius: 30px;
+            background: #f8e9ef;
+            color: var(--rose-dark);
+            font-size: 0.78rem;
+            font-weight: 700;
+        }
+
+        .developer-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            padding: 0;
+            margin: 15px 0 0;
+            list-style: none;
+        }
+
+        .developer-list li {
+            padding: 9px 13px;
+            border: 1px solid var(--border);
+            background: #fff8fb;
+            color: var(--plum);
+            border-radius: 10px;
+            font-size: 0.88rem;
+            font-weight: 600;
+        }
+
+        .page-footer {
+            text-align: center;
+            color: var(--muted);
+            font-size: 0.85rem;
+            padding: 15px 0 0;
+        }
+
+        @media (max-width: 576px) {
+            .page-wrapper {
+                margin-top: 24px;
+                padding: 0 12px;
+            }
+
+            .settings-section {
+                padding: 18px;
+            }
+
+            .settings-intro {
+                padding: 18px;
+                align-items: flex-start;
+            }
+
+            .intro-icon {
+                width: 48px;
+                height: 48px;
+                font-size: 1.2rem;
+            }
+
+            .setting-row {
+                align-items: flex-start;
+                flex-direction: column;
+                gap: 12px;
+            }
+
+            .setting-action {
+                align-self: flex-start;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Flash messages -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <div class="container mt-3">
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }} alert-dismissible fade show shadow-sm"
+                         role="alert">
+                        {{ message }}
+                        <button type="button"
+                                class="btn-close"
+                                data-bs-dismiss="alert"
+                                aria-label="Close"></button>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endwith %}
+
+    <!-- Top navigation -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm sticky-top">
+        <div class="container">
+            <a class="navbar-brand d-flex align-items-center text-decoration-none"
+               href="/home">
+                <i class="fa-solid fa-hand-holding-heart brand-icon me-2"></i>
+                <span class="brand-name">PCOS <span>Care</span></span>
+            </a>
+
+            <div class="d-flex align-items-center gap-2">
+                <button class="btn btn-outline-rose"
+                        type="button"
+                        data-bs-toggle="offcanvas"
+                        data-bs-target="#menu"
+                        aria-controls="menu"
+                        aria-label="Open navigation menu">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
+
+                <a href="/logout" class="btn btn-rose">
+                    <i class="fa-solid fa-right-from-bracket me-1"></i>
+                    Logout
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Sidebar -->
+    <div class="offcanvas offcanvas-start pcos-sidebar"
+         tabindex="-1"
+         id="menu"
+         aria-labelledby="pcosSidebarLabel">
+
+        <div class="offcanvas-header pcos-sidebar-header">
+            <a class="pcos-sidebar-brand text-decoration-none"
+               href="/home"
+               id="pcosSidebarLabel">
+                <span class="pcos-brand-icon">
+                    <i class="fa-solid fa-hand-holding-heart"></i>
+                </span>
+                <span class="pcos-brand-text">
+                    <strong>PCOS Care</strong>
+                    <small>Women's Wellness</small>
+                </span>
+            </a>
+
+            <button type="button"
+                    class="btn-close"
+                    data-bs-dismiss="offcanvas"
+                    aria-label="Close menu"></button>
+        </div>
+
+        <div class="offcanvas-body pcos-sidebar-body">
+            <div class="pcos-nav-label">MAIN MENU</div>
+
+            <nav class="pcos-nav" aria-label="Main navigation">
+                <a class="pcos-nav-link" href="/home">
+                    <i class="fa-solid fa-house"></i>
+                    <span>Home</span>
+                </a>
+
+                <a class="pcos-nav-link" href="/profile">
+                    <i class="fa-regular fa-user"></i>
+                    <span>My Profile</span>
+                </a>
+
+                <a class="pcos-nav-link" href="/history">
+                    <i class="fa-solid fa-chart-line"></i>
+                    <span>Prediction History</span>
+                </a>
+
+                <a class="pcos-nav-link" href="/cycle_tracker">
+                    <i class="fa-regular fa-calendar-days"></i>
+                    <span>Cycle Tracker</span>
+                </a>
+
+                <a class="pcos-nav-link" href="/diet_planner">
+                    <i class="fa-solid fa-utensils"></i>
+                    <span>Diet Planner</span>
+                </a>
+
+                <a class="pcos-nav-link" href="/exercise_planner">
+                    <i class="fa-solid fa-person-walking"></i>
+                    <span>Exercise Planner</span>
+                </a>
+
+                <a class="pcos-nav-link" href="/doctor_finder">
+                    <i class="fa-solid fa-user-doctor"></i>
+                    <span>Doctor Finder</span>
+                </a>
+
+                <a class="pcos-nav-link" href="/education">
+                    <i class="fa-solid fa-book-open"></i>
+                    <span>PCOS Education</span>
+                </a>
+            </nav>
+
+            <div class="pcos-nav-divider"></div>
+            <div class="pcos-nav-label">PREFERENCES</div>
+
+            <nav class="pcos-nav" aria-label="Preferences">
+                <a class="pcos-nav-link active"
+                   href="/settings"
+                   aria-current="page">
+                    <i class="fa-solid fa-sliders"></i>
+                    <span>Settings</span>
+                    <span class="pcos-active-indicator"></span>
+                </a>
+            </nav>
+
+            {% if session.get("user_email") in [
+                "syedaasra2407@gmail.com",
+                "khushigupta46576@gmail.com",
+                "ayushikashyap91427@gmail.com"
+            ] %}
+                <div class="pcos-nav-divider"></div>
+                <div class="pcos-nav-label">ADMINISTRATION</div>
+
+                <nav class="pcos-nav" aria-label="Administration">
+                    <a class="pcos-nav-link pcos-admin-link" href="/admin">
+                        <i class="fa-solid fa-shield-halved"></i>
+                        <span>Admin Dashboard</span>
+                    </a>
+                </nav>
+            {% endif %}
+
+            <div class="pcos-sidebar-footer">
+                <div class="pcos-sidebar-footer-icon">
+                    <i class="fa-solid fa-heart-pulse"></i>
+                </div>
+                <div>
+                    <strong>PCOS Care</strong>
+                    <small>Your wellness, your journey.</small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Settings content -->
+    <main class="page-wrapper">
+
+        <header class="page-heading">
+            <h1><i class="fa-solid fa-sliders me-2"></i>Settings</h1>
+            <p>Manage your account and learn how your PCOS Care information is used.</p>
+        </header>
+
+        <section class="settings-intro">
+            <div class="intro-icon">
+                <i class="fa-solid fa-heart-pulse"></i>
+            </div>
+            <div>
+                <h2 class="h5 fw-bold mb-2" style="color: var(--plum);">
+                    Your wellness, your way
+                </h2>
+                <p class="mb-0 text-secondary">
+                    Keep your account details up to date and explore the tools
+                    available to support your wellness journey.
+                </p>
+            </div>
+        </section>
+
+        <!-- Account management -->
+        <section class="settings-section" aria-labelledby="account-heading">
+            <div class="section-heading">
+                <div class="section-icon">
+                    <i class="fa-solid fa-user-gear"></i>
+                </div>
+                <div>
+                    <h2 id="account-heading">Account Management</h2>
+                    <p>Manage your personal information and account access.</p>
+                </div>
+            </div>
+
+            <div class="setting-row">
+                <div class="setting-copy">
+                    <h3>Personal Profile</h3>
+                    <p>Review or update the name and email address associated with your account.</p>
+                </div>
+                <a href="/profile" class="btn btn-outline-rose setting-action">
+                    <i class="fa-regular fa-user me-1"></i> Edit Profile
+                </a>
+            </div>
+
+            <div class="setting-row">
+                <div class="setting-copy">
+                    <h3>Password Assistance</h3>
+                    <p>Use the password recovery page if you need help accessing your account.</p>
+                </div>
+                <a href="/forgot_password" class="btn btn-outline-rose setting-action">
+                    <i class="fa-solid fa-key me-1"></i> Password Help
+                </a>
+            </div>
+
+            <div class="setting-row">
+                <div class="setting-copy">
+                    <h3>Sign Out</h3>
+                    <p>End your current session, especially when using a shared device.</p>
+                </div>
+                <a href="/logout" class="btn btn-outline-secondary setting-action">
+                    <i class="fa-solid fa-right-from-bracket me-1"></i> Log Out
+                </a>
+            </div>
+        </section>
+
+        <!-- Wellness preferences -->
+        <section class="settings-section" aria-labelledby="wellness-heading">
+            <div class="section-heading">
+                <div class="section-icon">
+                    <i class="fa-solid fa-spa"></i>
+                </div>
+                <div>
+                    <h2 id="wellness-heading">Health &amp; Wellness</h2>
+                    <p>Quick access to the tools that support your daily routine.</p>
+                </div>
+            </div>
+
+            <div class="setting-row">
+                <div class="setting-copy">
+                    <h3>Menstrual Cycle Tracking</h3>
+                    <p>Record cycle information and review the entries available in your tracker.</p>
+                </div>
+                <a href="/cycle_tracker" class="btn btn-outline-rose setting-action">
+                    Open Tracker <i class="fa-solid fa-arrow-right ms-1"></i>
+                </a>
+            </div>
+
+            <div class="setting-row">
+                <div class="setting-copy">
+                    <h3>Nutrition &amp; Meal Planning</h3>
+                    <p>Explore food and meal-planning guidance for your wellness routine.</p>
+                </div>
+                <a href="/diet_planner" class="btn btn-outline-rose setting-action">
+                    View Planner <i class="fa-solid fa-arrow-right ms-1"></i>
+                </a>
+            </div>
+
+            <div class="setting-row">
+                <div class="setting-copy">
+                    <h3>Physical Activity</h3>
+                    <p>Explore exercise suggestions and build a routine that suits your needs.</p>
+                </div>
+                <a href="/exercise_planner" class="btn btn-outline-rose setting-action">
+                    View Exercises <i class="fa-solid fa-arrow-right ms-1"></i>
+                </a>
+            </div>
+
+            <div class="setting-row">
+                <div class="setting-copy">
+                    <h3>Prediction History</h3>
+                    <p>Return to your previously saved risk assessments, if available in your account.</p>
+                </div>
+                <a href="/history" class="btn btn-outline-rose setting-action">
+                    View History <i class="fa-solid fa-arrow-right ms-1"></i>
+                </a>
+            </div>
+        </section>
+
+        <!-- Notifications -->
+        <section class="settings-section" aria-labelledby="notifications-heading">
+            <div class="section-heading">
+                <div class="section-icon">
+                    <i class="fa-regular fa-bell"></i>
+                </div>
+                <div>
+                    <h2 id="notifications-heading">Notifications &amp; Reminders</h2>
+                    <p>Understand which reminder features are available.</p>
+                </div>
+            </div>
+
+            <div class="setting-row">
+                <div class="setting-copy">
+                    <h3>Cycle Reminders</h3>
+                    <p>Cycle reminders can help you remember to update your tracker. Automatic reminders require a configured reminder feature.</p>
+                </div>
+                <span class="status-label">
+                    <i class="fa-solid fa-circle-info"></i> Availability depends on setup
+                </span>
+            </div>
+
+            <div class="setting-row">
+                <div class="setting-copy">
+                    <h3>Email Health Reports</h3>
+                    <p>Report delivery depends on the email-report feature configured in your application.</p>
+                </div>
+                <span class="status-label">
+                    <i class="fa-solid fa-envelope"></i> Check report feature
+                </span>
+            </div>
+
+            <div class="info-note">
+                <i class="fa-solid fa-circle-info me-2"></i>
+                Reminder and notification preferences are not editable here yet.
+                No notification settings will be saved unless a corresponding backend feature is implemented.
+            </div>
+        </section>
+
+        <!-- Privacy -->
+        <section class="settings-section" aria-labelledby="privacy-heading">
+            <div class="section-heading">
+                <div class="section-icon">
+                    <i class="fa-solid fa-shield-heart"></i>
+                </div>
+                <div>
+                    <h2 id="privacy-heading">Privacy &amp; Security</h2>
+                    <p>Important information about your account and health data.</p>
+                </div>
+            </div>
+
+            <div class="setting-row">
+                <div class="setting-copy">
+                    <h3>Personal &amp; Health Information</h3>
+                    <p>PCOS-related information may be sensitive. Only enter information you are comfortable sharing with this application.</p>
+                </div>
+                <span class="status-label">
+                    <i class="fa-solid fa-lock"></i> Privacy awareness
+                </span>
+            </div>
+
+            <div class="setting-row">
+                <div class="setting-copy">
+                    <h3>Account Security</h3>
+                    <p>Use a strong, unique password and sign out after using a shared or public computer.</p>
+                </div>
+                <a href="/forgot_password" class="btn btn-outline-rose setting-action">
+                    Password Help
+                </a>
+            </div>
+
+            <div class="info-note">
+                <i class="fa-solid fa-triangle-exclamation me-2"></i>
+                This section provides security guidance; it does not independently verify encryption,
+                storage security, or deletion of health records. Those protections depend on your
+                application's backend and hosting configuration.
+            </div>
+        </section>
+
+        <!-- About -->
+        <section class="settings-section" aria-labelledby="about-heading">
+            <div class="section-heading">
+                <div class="section-icon">
+                    <i class="fa-solid fa-circle-info"></i>
+                </div>
+                <div>
+                    <h2 id="about-heading">About PCOS Care</h2>
+                    <p>Learn about the purpose and limitations of this project.</p>
+                </div>
+            </div>
+
+            <div class="setting-row">
+                <div class="setting-copy">
+                    <h3>PCOS Care — Women's Wellness</h3>
+                    <p>
+                        A wellness platform designed to provide PCOS risk assessment,
+                        cycle tracking, lifestyle guidance, and educational resources.
+                    </p>
+                </div>
+                <span class="status-label">Version 1.0</span>
+            </div>
+
+            <div class="setting-row">
+                <div class="setting-copy">
+                    <h3>Project Developers</h3>
+                    <p>Developed as a collaborative project.</p>
+                    <ul class="developer-list">
+                        <li><i class="fa-solid fa-user me-1"></i> Syeda Asra</li>
+                        <li><i class="fa-solid fa-user me-1"></i> Khushi Gupta</li>
+                        <li><i class="fa-solid fa-user me-1"></i> Ayushi Kashyap</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="info-note">
+                <i class="fa-solid fa-stethoscope me-2"></i>
+                <strong>Health disclaimer:</strong> PCOS Care is an informational and risk-assessment
+                support tool, not a diagnostic service. A prediction does not confirm or rule out PCOS.
+                Consult a qualified healthcare professional for diagnosis, treatment, or medical concerns.
+            </div>
+        </section>
+
+        <div class="text-center mt-4">
+            <a href="/home" class="btn btn-rose btn-lg px-4">
+                <i class="fa-solid fa-house me-2"></i> Back to Home
+            </a>
+        </div>
+
+        <footer class="page-footer">
+            <i class="fa-solid fa-hand-holding-heart me-1"></i>
+            PCOS Care · Supporting your wellness journey
+        </footer>
+
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        // Automatically dismiss flash messages after four seconds.
+        window.setTimeout(function () {
+            document.querySelectorAll(".alert").forEach(function (alertElement) {
+                bootstrap.Alert.getOrCreateInstance(alertElement).close();
+            });
+        }, 4000);
+    </script>
+
+</body>
+</html>

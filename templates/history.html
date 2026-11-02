@@ -1,0 +1,530 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Prediction History | PCOS Care</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+          rel="stylesheet">
+
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&display=swap"
+          rel="stylesheet">
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='theme.css') }}">
+
+    <style>
+        :root {
+            --rose: #b8587a;
+            --plum: #4b2e43;
+            --pink-bg: #fff5f7;
+            --light-rose: #fce8ef;
+            --border: #f0dce5;
+            --muted: #786b75;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            background: var(--pink-bg);
+            color: var(--plum);
+            font-family: 'Quicksand', sans-serif;
+        }
+
+        .navbar {
+            background: #fff;
+        }
+
+        .brand-text {
+            color: var(--plum);
+            font-weight: 700;
+        }
+
+        .brand-accent {
+            color: var(--rose);
+        }
+
+        .btn-rose {
+            background: var(--rose);
+            border: 1px solid var(--rose);
+            color: #fff;
+        }
+
+        .btn-rose:hover {
+            background: var(--plum);
+            border-color: var(--plum);
+            color: #fff;
+        }
+
+        .btn-outline-rose {
+            border: 1px solid var(--rose);
+            color: var(--rose);
+        }
+
+        .btn-outline-rose:hover {
+            background: var(--rose);
+            color: #fff;
+        }
+
+        .offcanvas {
+            background: #fffafd;
+        }
+
+        .sidebar-link {
+            display: block;
+            padding: 11px 14px;
+            margin-bottom: 7px;
+            border-radius: 10px;
+            color: var(--plum);
+            text-decoration: none;
+            transition: background .2s;
+        }
+
+        .sidebar-link i {
+            width: 24px;
+            color: var(--rose);
+        }
+
+        .sidebar-link:hover,
+        .sidebar-link.active {
+            background: var(--light-rose);
+            color: var(--plum);
+            font-weight: 700;
+        }
+
+        .page-container {
+            max-width: 1200px;
+            margin: 36px auto;
+        }
+
+        .history-card {
+            padding: 32px;
+            background: #fff;
+            border: 1px solid var(--border);
+            border-radius: 22px;
+            box-shadow: 0 10px 30px rgba(75, 46, 67, .07);
+        }
+
+        .page-icon {
+            width: 58px;
+            height: 58px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 14px;
+            border-radius: 16px;
+            background: var(--light-rose);
+            color: var(--rose);
+            font-size: 24px;
+        }
+
+        .section-title {
+            color: var(--plum);
+            font-weight: 700;
+        }
+
+        .muted {
+            color: var(--muted);
+        }
+
+        .summary-panel {
+            padding: 18px;
+            background: #fffafd;
+            border: 1px solid var(--border);
+            border-radius: 14px;
+        }
+
+        .summary-panel i {
+            color: var(--rose);
+            font-size: 20px;
+        }
+
+        .table-responsive {
+            border: 1px solid var(--border);
+            border-radius: 14px;
+        }
+
+        .history-table {
+            margin-bottom: 0;
+        }
+
+        .history-table thead th {
+            padding: 15px 12px;
+            background: var(--light-rose);
+            color: var(--plum);
+            border-color: var(--border);
+            text-align: center;
+            white-space: nowrap;
+        }
+
+        .history-table tbody td {
+            padding: 14px 12px;
+            text-align: center;
+            vertical-align: middle;
+            border-color: var(--border);
+        }
+
+        .history-table tbody tr:hover td {
+            background: #fffafd;
+        }
+
+        .risk-badge {
+            display: inline-block;
+            padding: 7px 11px;
+            border-radius: 30px;
+            font-size: .82rem;
+            font-weight: 700;
+            white-space: nowrap;
+        }
+
+        .risk-high {
+            background: #fde8e8;
+            color: #a12626;
+        }
+
+        .risk-other {
+            background: #e6f4ea;
+            color: #21683a;
+        }
+
+        .empty-state {
+            padding: 48px 20px;
+            text-align: center;
+        }
+
+        .empty-state i {
+            margin-bottom: 18px;
+            color: #d8a0b5;
+            font-size: 48px;
+        }
+
+        .footer-note {
+            color: var(--muted);
+            font-size: .85rem;
+        }
+
+        @media (max-width: 768px) {
+            .page-container {
+                margin: 22px auto;
+            }
+
+            .history-card {
+                padding: 22px 16px;
+            }
+
+            .page-heading {
+                align-items: flex-start !important;
+            }
+
+            .page-icon {
+                width: 48px;
+                height: 48px;
+                margin-right: 10px;
+                font-size: 20px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Flash Messages -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+    <div class="container mt-3">
+        {% for category, message in messages %}
+        <div class="alert alert-{{ category }} alert-dismissible fade show shadow-sm"
+             role="alert">
+            {{ message }}
+            <button type="button" class="btn-close"
+                    data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+    {% endwith %}
+
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg shadow-sm sticky-top">
+        <div class="container">
+
+            <a class="navbar-brand d-flex align-items-center" href="/home">
+                <i class="fa-solid fa-hand-holding-heart me-2"
+                   style="color:var(--rose);"></i>
+                <span class="brand-text">PCOS</span>
+                <span class="brand-accent ms-1 fw-bold">Care</span>
+            </a>
+
+            <div class="d-flex align-items-center gap-2">
+                <button class="btn btn-outline-rose"
+                        type="button"
+                        data-bs-toggle="offcanvas"
+                        data-bs-target="#menu"
+                        aria-controls="menu"
+                        aria-label="Open navigation menu">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
+
+                <a href="/logout" class="btn btn-rose">
+                    <i class="fa-solid fa-right-from-bracket me-1"></i>
+                    Logout
+                </a>
+            </div>
+
+        </div>
+    </nav>
+
+    <!-- Sidebar -->
+    <div class="offcanvas offcanvas-start" tabindex="-1"
+         id="menu" aria-labelledby="menuLabel">
+
+        <div class="offcanvas-header">
+            <a class="navbar-brand d-flex align-items-center"
+               href="/home" id="menuLabel">
+                <i class="fa-solid fa-hand-holding-heart me-2"
+                   style="color:var(--rose);"></i>
+                <span class="brand-text">PCOS</span>
+                <span class="brand-accent ms-1 fw-bold">Care</span>
+            </a>
+
+            <button type="button" class="btn-close"
+                    data-bs-dismiss="offcanvas" aria-label="Close menu"></button>
+        </div>
+
+        <div class="offcanvas-body">
+            <a class="sidebar-link" href="/home">
+                <i class="fa-solid fa-house"></i> Home
+            </a>
+
+            <a class="sidebar-link" href="/profile">
+                <i class="fa-solid fa-user"></i> My Profile
+            </a>
+
+            <a class="sidebar-link" href="/settings">
+                <i class="fa-solid fa-gear"></i> Settings
+            </a>
+
+            <a class="sidebar-link active" href="/history"
+               aria-current="page">
+                <i class="fa-solid fa-clock-rotate-left"></i> Prediction History
+            </a>
+
+            <a class="sidebar-link" href="/cycle_tracker">
+                <i class="fa-solid fa-calendar-days"></i> Cycle Tracker
+            </a>
+
+            <a class="sidebar-link" href="/diet_planner">
+                <i class="fa-solid fa-bowl-food"></i> Diet Planner
+            </a>
+
+            <a class="sidebar-link" href="/exercise_planner">
+                <i class="fa-solid fa-dumbbell"></i> Exercise Planner
+            </a>
+
+            <a class="sidebar-link" href="/doctor_finder">
+                <i class="fa-solid fa-user-doctor"></i> Doctor Finder
+            </a>
+
+            <a class="sidebar-link" href="/education">
+                <i class="fa-solid fa-book-open"></i> PCOS Education
+            </a>
+
+            {% if session.get("user_email") in [
+                "syedaasra2407@gmail.com",
+                "khushigupta46576@gmail.com",
+                "ayushikashyap91427@gmail.com"
+            ] %}
+            <a class="sidebar-link" href="/admin">
+                <i class="fa-solid fa-user-shield"></i> Admin Dashboard
+            </a>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <main class="container page-container">
+
+        <section class="history-card">
+
+            <div class="d-flex align-items-center page-heading mb-2">
+                <div class="page-icon">
+                    <i class="fa-solid fa-clock-rotate-left"></i>
+                </div>
+
+                <div>
+                    <h1 class="h2 section-title mb-1">Prediction History</h1>
+                    <p class="muted mb-0">
+                        Review your previous PCOS risk screening results.
+                    </p>
+                </div>
+            </div>
+
+            <p class="muted mt-3 mb-4">
+                Welcome, <strong>{{ user_name }}</strong>.
+                Your saved screening history is displayed below.
+            </p>
+
+            {% if history %}
+
+            <!-- Summary -->
+            <div class="row g-3 mb-4">
+
+                <div class="col-md-6">
+                    <div class="summary-panel h-100">
+                        <div class="d-flex align-items-center gap-3">
+                            <i class="fa-solid fa-file-medical"></i>
+                            <div>
+                                <div class="small muted">Saved screenings</div>
+                                <div class="h4 section-title mb-0">
+                                    {{ history|length }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="summary-panel h-100">
+                        <div class="d-flex align-items-center gap-3">
+                            <i class="fa-solid fa-shield-heart"></i>
+                            <div>
+                                <div class="small muted">Your records</div>
+                                <div class="fw-bold">Personal screening history</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- History Table -->
+            <div class="table-responsive">
+                <table class="table table-hover history-table">
+
+                    <caption class="visually-hidden">
+                        Previous PCOS screening results, BMI, cycle length,
+                        and estimated risk percentage.
+                    </caption>
+
+                    <thead>
+                        <tr>
+                            <th scope="col">Date</th>
+                            <th scope="col">Prediction</th>
+                            <th scope="col">BMI</th>
+                            <th scope="col">Cycle Length</th>
+                            <th scope="col">Risk %</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        {% for item in history %}
+                        <tr>
+
+                            <td>{{ item.prediction_date }}</td>
+
+                            <td>
+                                {% if item.prediction == "High Risk Detected" %}
+                                <span class="risk-badge risk-high">
+                                    <i class="fa-solid fa-circle-exclamation me-1"></i>
+                                    {{ item.prediction }}
+                                </span>
+                                {% else %}
+                                <span class="risk-badge risk-other">
+                                    <i class="fa-solid fa-circle-check me-1"></i>
+                                    {{ item.prediction }}
+                                </span>
+                                {% endif %}
+                            </td>
+
+                            <td>{{ item.bmi }}</td>
+
+                            <td>
+                                {% if item.cycle_length is not none and item.cycle_length != '' %}
+                                    {{ item.cycle_length }} days
+                                {% else %}
+                                    <span class="muted">Not recorded</span>
+                                {% endif %}
+                            </td>
+
+                            <td>
+                                <strong>{{ item.risk_percentage }}%</strong>
+                            </td>
+
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+
+                </table>
+            </div>
+
+            <p class="small muted mt-3 mb-0">
+                <i class="fa-solid fa-circle-info me-1"></i>
+                Risk percentages are model estimates, not a confirmed diagnosis
+                or a measure of your overall health. Discuss concerns with a
+                qualified healthcare professional.
+            </p>
+
+            {% else %}
+
+            <!-- Empty State -->
+            <div class="empty-state">
+                <i class="fa-regular fa-folder-open"></i>
+
+                <h2 class="h4 section-title">No Screening History Yet</h2>
+
+                <p class="muted mx-auto" style="max-width:450px;">
+                    Your previous screening results will appear here after
+                    you complete a prediction and it is saved successfully.
+                </p>
+
+                <a href="/home" class="btn btn-rose mt-2 px-4">
+                    <i class="fa-solid fa-plus me-2"></i>
+                    Start a Screening
+                </a>
+            </div>
+
+            {% endif %}
+
+            <!-- Navigation -->
+            <div class="d-flex flex-wrap justify-content-center gap-2 mt-4">
+
+                <a href="/home" class="btn btn-rose px-4">
+                    <i class="fa-solid fa-house me-2"></i>
+                    Back to Home
+                </a>
+
+                <a href="/education" class="btn btn-outline-rose px-4">
+                    <i class="fa-solid fa-book-open me-2"></i>
+                    Learn About PCOS
+                </a>
+
+            </div>
+
+            <p class="footer-note text-center mt-4 mb-0">
+                PCOS Care · Supporting informed health decisions
+            </p>
+
+        </section>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        window.setTimeout(function () {
+            document.querySelectorAll(".alert-dismissible").forEach(function (alert) {
+                bootstrap.Alert.getOrCreateInstance(alert).close();
+            });
+        }, 4000);
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,406 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Create Account | PCOS Care</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='theme.css') }}">
+
+    <style>
+        :root {
+            --rose: #b8587a;
+            --rose-dark: #9d4766;
+            --plum: #4b2e43;
+            --background: #fff5f7;
+            --border: #f0dce4;
+            --muted: #806d79;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            font-family: 'Quicksand', sans-serif;
+            color: var(--plum);
+            background: var(--background);
+        }
+
+        .register-container {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 30px 16px;
+            background:
+                radial-gradient(circle at 10% 10%, #f9dce6 0, transparent 35%),
+                radial-gradient(circle at 90% 90%, #f3d6e1 0, transparent 35%),
+                linear-gradient(135deg, #fff9fb, #fff0f5);
+        }
+
+        .register-card {
+            width: 100%;
+            max-width: 510px;
+            padding: 36px 38px 30px;
+            background: rgba(255, 255, 255, 0.97);
+            border: 1px solid var(--border);
+            border-top: 5px solid var(--rose);
+            border-radius: 24px;
+            box-shadow: 0 18px 55px rgba(75, 46, 67, 0.10);
+        }
+
+        .brand-icon {
+            width: 70px;
+            height: 70px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 14px;
+            border-radius: 50%;
+            color: var(--rose);
+            background: #fff0f5;
+            border: 1px solid #f4dce5;
+        }
+
+        .brand-icon i {
+            font-size: 31px;
+        }
+
+        .brand-title {
+            color: var(--plum);
+            font-size: 29px;
+            font-weight: 700;
+        }
+
+        .subtitle {
+            color: var(--muted);
+            font-size: 14px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 7px;
+            color: var(--plum);
+            font-size: 13px;
+            font-weight: 700;
+        }
+
+        .input-group {
+            overflow: hidden;
+            border: 1px solid #e9d8e0;
+            border-radius: 12px;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        .input-group:focus-within {
+            border-color: var(--rose);
+            box-shadow: 0 0 0 3px rgba(184, 88, 122, 0.12);
+        }
+
+        .input-group-text {
+            background: #fff;
+            color: var(--rose);
+            border: none;
+            padding-left: 14px;
+            padding-right: 10px;
+        }
+
+        .form-control {
+            min-height: 46px;
+            padding: 11px 12px;
+            border: none;
+            background: #fff;
+            color: var(--plum);
+            font-family: inherit;
+            font-size: 14px;
+            box-shadow: none !important;
+        }
+
+        .form-control:focus {
+            background: #fff;
+        }
+
+        .form-control::placeholder {
+            color: #b4a4ae;
+        }
+
+        .password-toggle {
+            padding: 0 15px;
+            border: none;
+            background: #fff;
+            color: var(--muted);
+        }
+
+        .password-toggle:hover {
+            color: var(--rose);
+        }
+
+        .password-hint {
+            margin-top: 7px;
+            color: var(--muted);
+            font-size: 11px;
+        }
+
+        .btn-register {
+            min-height: 49px;
+            border: none;
+            border-radius: 12px;
+            background: linear-gradient(135deg, var(--rose), var(--rose-dark));
+            color: white;
+            font-family: inherit;
+            font-size: 15px;
+            font-weight: 700;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .btn-register:hover {
+            color: white;
+            transform: translateY(-1px);
+            box-shadow: 0 8px 20px rgba(184, 88, 122, 0.24);
+        }
+
+        .login-link {
+            color: var(--rose-dark);
+            font-weight: 700;
+            text-decoration: none;
+        }
+
+        .login-link:hover {
+            color: var(--plum);
+            text-decoration: underline;
+        }
+
+        .footer-text {
+            color: #a18d99;
+            font-size: 11px;
+        }
+
+        .alert {
+            border-radius: 12px;
+            font-size: 13px;
+        }
+
+        @media (max-width: 480px) {
+            .register-card {
+                padding: 30px 22px 25px;
+                border-radius: 20px;
+            }
+
+            .brand-title {
+                font-size: 26px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Flash Messages -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <div class="container position-fixed top-0 start-50 translate-middle-x mt-3"
+                 style="z-index: 1055; max-width: 500px;">
+
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }} alert-dismissible fade show shadow-sm"
+                         role="alert">
+                        {{ message }}
+                        <button type="button"
+                                class="btn-close"
+                                data-bs-dismiss="alert"
+                                aria-label="Close"></button>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endwith %}
+
+    <main class="register-container">
+        <section class="register-card">
+
+            <!-- Brand Header -->
+            <div class="text-center mb-4">
+                <div class="brand-icon">
+                    <i class="fa-solid fa-hand-holding-heart"></i>
+                </div>
+
+                <h1 class="brand-title mb-2">PCOS Care</h1>
+
+                <p class="subtitle mb-0">
+                    Create your account and begin your wellness journey.
+                </p>
+            </div>
+
+            <!-- Registration Error -->
+            {% if error %}
+                <div class="alert alert-danger" role="alert">
+                    <i class="fa-solid fa-circle-exclamation me-2"></i>
+                    {{ error }}
+                </div>
+            {% endif %}
+
+            <!-- Registration Form -->
+            <form method="POST" id="registerForm">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+                <div class="mb-3">
+                    <label for="full_name" class="form-label">Full Name</label>
+
+                    <div class="input-group">
+                        <span class="input-group-text">
+                            <i class="fa-solid fa-user"></i>
+                        </span>
+
+                        <input
+                            type="text"
+                            id="full_name"
+                            name="full_name"
+                            class="form-control"
+                            placeholder="Enter your full name"
+                            autocomplete="name"
+                            maxlength="100"
+                            required>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label for="age" class="form-label">Age</label>
+
+                    <div class="input-group">
+                        <span class="input-group-text">
+                            <i class="fa-solid fa-cake-candles"></i>
+                        </span>
+
+                        <input
+                            type="number"
+                            id="age"
+                            name="age"
+                            class="form-control"
+                            placeholder="Enter your age"
+                            min="13"
+                            max="60"
+                            step="1"
+                            inputmode="numeric"
+                            required>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label for="email" class="form-label">Email Address</label>
+
+                    <div class="input-group">
+                        <span class="input-group-text">
+                            <i class="fa-regular fa-envelope"></i>
+                        </span>
+
+                        <input
+                            type="email"
+                            id="email"
+                            name="email"
+                            class="form-control"
+                            placeholder="Enter your email address"
+                            autocomplete="email"
+                            maxlength="254"
+                            required>
+                    </div>
+                </div>
+
+                <div class="mb-4">
+                    <label for="password" class="form-label">Create Password</label>
+
+                    <div class="input-group">
+                        <span class="input-group-text">
+                            <i class="fa-solid fa-lock"></i>
+                        </span>
+
+                        <input
+                            type="password"
+                            id="password"
+                            name="password"
+                            class="form-control"
+                            placeholder="Create a strong password"
+                            autocomplete="new-password"
+                            minlength="8"
+                            required>
+
+                        <button
+                            type="button"
+                            class="password-toggle"
+                            id="togglePassword"
+                            aria-label="Show password"
+                            aria-pressed="false">
+                            <i class="fa-regular fa-eye" id="eyeIcon"></i>
+                        </button>
+                    </div>
+
+                    <p class="password-hint mb-0">
+                        <i class="fa-solid fa-shield-halved me-1"></i>
+                        Use at least 8 characters. Avoid reusing another account's password.
+                    </p>
+                </div>
+
+                <button type="submit" class="btn btn-register w-100">
+                    <i class="fa-solid fa-user-plus me-2"></i>
+                    Create Account
+                </button>
+            </form>
+
+            <!-- Login Link -->
+            <div class="text-center mt-4">
+                <p class="subtitle mb-2">Already have an account?</p>
+
+                <a href="/login" class="login-link">
+                    <i class="fa-solid fa-right-to-bracket me-1"></i>
+                    Login here
+                </a>
+            </div>
+
+            <div class="text-center footer-text mt-4">
+                &copy; 2026 PCOS Care. All rights reserved.
+            </div>
+
+        </section>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script>
+        // Toggle password visibility
+        const togglePassword = document.getElementById("togglePassword");
+        const passwordInput = document.getElementById("password");
+        const eyeIcon = document.getElementById("eyeIcon");
+
+        togglePassword.addEventListener("click", function () {
+            const showPassword = passwordInput.type === "password";
+
+            passwordInput.type = showPassword ? "text" : "password";
+
+            eyeIcon.classList.toggle("fa-eye", !showPassword);
+            eyeIcon.classList.toggle("fa-eye-slash", showPassword);
+
+            togglePassword.setAttribute(
+                "aria-label",
+                showPassword ? "Hide password" : "Show password"
+            );
+
+            togglePassword.setAttribute("aria-pressed", String(showPassword));
+        });
+
+        // Automatically dismiss flash messages after 4 seconds
+        setTimeout(function () {
+            document.querySelectorAll(".alert").forEach(function (alertElement) {
+                bootstrap.Alert.getOrCreateInstance(alertElement).close();
+            });
+        }, 4000);
+    </script>
+
+</body>
+</html>

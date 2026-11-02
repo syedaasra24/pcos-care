@@ -1,0 +1,36 @@
+# Environment variables and secrets
+.env
+.env.*
+!.env.example
+
+# Python virtual environments
+.venv/
+venv/
+env/
+
+# Python cache files
+__pycache__/
+*.py[cod]
+
+# Logs and local runtime files
+*.log
+instance/
+
+# Database backups and exports
+*.sql
+*.sql.gz
+*.dump
+*.sqlite
+*.sqlite3
+
+# Local development files
+.DS_Store
+Thumbs.db
+.vscode/
+
+# Python cache files in all folders
+**/__pycache__/
+*.py[cod]
+
+# Dataset files - review before publishing
+data/*.csv
