@@ -77,13 +77,13 @@ The project combines predictive analytics with wellness-oriented features to hel
 
 Add screenshots of your actual application below. Upload them into a folder named `screenshots` in your repository.
 
-| 🏠 Home Page | 🔐 Login Page |
+| 🏠 Landing Page | 🔐 Home Page |
 |---|---|
-| ![PCOS Care Home](screenshots/home.png) | ![Login Page](screenshots/login.png) |
+| ![PCOS Care Home](screenshots/PCOS Care Home.png) | ![Login Page](screenshots/Landing.png) |
 
-| 🧠 Prediction Results | 📊 Dashboard |
+| 📊 Prediction Form | 🧠 Prediction Results |
 |---|---|
-| ![Prediction Results](screenshots/prediction.png) | ![Dashboard](screenshots/dashboard.png) |
+| ![Prediction Results](screenshots/Prediction form.png) | ![Dashboard](screenshots/Prediction Result.png) |
 
 > Replace the example filenames with the actual names of your screenshots.
 
