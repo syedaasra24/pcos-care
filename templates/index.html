@@ -101,9 +101,6 @@
             flex: 0 0 39px; width: 39px; height: 39px; display: grid; place-items: center;
             background: var(--pink-soft); color: var(--rose); border-radius: 12px;
         }
-        .sidebar-link { display: flex; gap: 12px; align-items: center; text-decoration: none; color: var(--plum); padding: 11px 13px; border-radius: 11px; margin-bottom: 5px; font-weight: 600; }
-        .sidebar-link:hover, .sidebar-link.active { background: var(--pink-soft); color: var(--rose-dark); }
-        .sidebar-link i { width: 20px; text-align: center; }
         footer { background: #264653; color: white; padding: 50px 0 20px; margin-top: 80px; }
         footer h5 { color: #2a9d8f; font-weight: 700; margin-bottom: 20px; }
         footer a { color: #a8dadc; text-decoration: none; }
@@ -146,35 +143,8 @@
         </div>
     </nav>
 
-    <div class="offcanvas offcanvas-start" tabindex="-1" id="menu" aria-labelledby="sidebarTitle">
-        <div class="offcanvas-header border-bottom">
-            <a class="navbar-brand fw-bold d-flex align-items-center" href="{{ url_for('home') }}">
-                <span class="brand-mark"><i class="fa-solid fa-hand-holding-heart"></i></span>
-                <span style="color:var(--plum)">PCOS</span><span class="ms-1" style="color:var(--rose)">Care</span>
-            </a>
-            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
-        </div>
-        <div class="offcanvas-body">
-            <div id="sidebarTitle" class="eyebrow mb-3">Your wellness space</div>
-            <a class="sidebar-link active" aria-current="page" href="{{ url_for('home') }}"><i class="fa-solid fa-house"></i> Home</a>
-            <a class="sidebar-link" href="{{ url_for('profile') }}"><i class="fa-solid fa-user"></i> My Profile</a>
-            <a class="sidebar-link" href="{{ url_for('history') }}"><i class="fa-solid fa-clock-rotate-left"></i> Prediction History</a>
-            <a class="sidebar-link" href="{{ url_for('cycle_tracker') }}"><i class="fa-solid fa-calendar-days"></i> Cycle Tracker</a>
-            <a class="sidebar-link" href="{{ url_for('diet_planner') }}"><i class="fa-solid fa-utensils"></i> Diet Planner</a>
-            <a class="sidebar-link" href="{{ url_for('exercise_planner') }}"><i class="fa-solid fa-person-walking"></i> Exercise Planner</a>
-            <a class="sidebar-link" href="{{ url_for('doctor_finder') }}"><i class="fa-solid fa-user-doctor"></i> Doctor Finder</a>
-            <a class="sidebar-link" href="{{ url_for('education') }}"><i class="fa-solid fa-book-open"></i> PCOS Education</a>
-            <a class="sidebar-link" href="{{ url_for('settings') }}"><i class="fa-solid fa-gear"></i> Settings</a>
-            {% if session.get("user_email") in ["syedaasra2407@gmail.com", "khushigupta46576@gmail.com", "ayushikashyap91427@gmail.com"] %}
-            <hr>
-            <a class="sidebar-link" href="{{ url_for('admin') }}"><i class="fa-solid fa-user-shield"></i> Admin Dashboard</a>
-            {% endif %}
-            <div class="mt-4 p-3 rounded-3" style="background:var(--pink-bg)">
-                <div class="fw-bold mb-1"><i class="fa-solid fa-heart me-2" style="color:var(--rose)"></i>Take it one step at a time</div>
-                <small class="text-muted">Your dashboard is a support tool, not a substitute for medical care.</small>
-            </div>
-        </div>
-    </div>
+    {% set active_page = 'home' %}
+    {% include 'sidebar.html' %}
 
     <main class="container page-wrap py-4 py-md-5">
         <!-- Compact dashboard welcome -->
