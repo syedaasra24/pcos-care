@@ -14,6 +14,9 @@ import random
 import secrets
 import re
 from urllib.parse import quote_plus
+import json
+from urllib.request import Request, urlopen
+from urllib.error import HTTPError, URLError
 
 app = Flask(__name__)
 app.secret_key = Config.SECRET_KEY
@@ -29,23 +32,56 @@ def handle_csrf_error(e):
 
 # ---------------- EMAIL CONFIGURATION ----------------
 
-app.config["MAIL_SERVER"] = "smtp.gmail.com"
-app.config["MAIL_PORT"] = 587
-app.config["MAIL_USE_TLS"] = True
-app.config["MAIL_USE_SSL"] = False
-app.config["MAIL_USERNAME"] = Config.MAIL_USERNAME
-app.config["MAIL_PASSWORD"] = Config.MAIL_PASSWORD
-app.config["MAIL_DEFAULT_SENDER"] = Config.MAIL_USERNAME
-app.config["MAIL_TIMEOUT"] = 20
 
-mail = Mail(app)
+# ---------------- RESEND EMAIL CONFIGURATION ----------------
 
-print("SMTP server:", app.config["MAIL_SERVER"])
-print("SMTP port:", app.config["MAIL_PORT"])
-print("TLS enabled:", app.config["MAIL_USE_TLS"])
-print("Username loaded:", bool(app.config["MAIL_USERNAME"]))
-print("Password loaded:", bool(app.config["MAIL_PASSWORD"]))
-print("Username:", app.config["MAIL_USERNAME"])
+RESEND_API_KEY = os.environ.get("RESEND_API_KEY", "").strip()
+RESEND_FROM_EMAIL = os.environ.get("RESEND_FROM_EMAIL", "").strip()
+
+
+def send_email_resend(to_email, subject, body):
+    """Send an email through the Resend HTTPS API."""
+    if not RESEND_API_KEY or not RESEND_FROM_EMAIL:
+        raise RuntimeError(
+            "Email service is not configured. Check Render environment variables."
+        )
+
+    payload = {
+        "from": RESEND_FROM_EMAIL,
+        "to": [to_email],
+        "subject": subject,
+        "text": body,
+    }
+
+    request = Request(
+        "https://api.resend.com/emails",
+        data=json.dumps(payload).encode("utf-8"),
+        headers={
+            "Authorization": f"Bearer {RESEND_API_KEY}",
+            "Content-Type": "application/json",
+        },
+        method="POST",
+    )
+
+    try:
+        with urlopen(request, timeout=15) as response:
+            result = json.loads(response.read().decode("utf-8"))
+            return result
+    except HTTPError as exc:
+        # Do not log the API key or email contents.
+        error_body = exc.read().decode("utf-8", errors="replace")
+        app.logger.error(
+            "Resend rejected email request. HTTP status: %s; response: %s",
+            exc.code,
+            error_body[:500],
+        )
+        raise RuntimeError(
+            f"Resend rejected the email request (HTTP {exc.code})."
+        ) from exc
+    except (URLError, TimeoutError) as exc:
+        app.logger.error("Resend connection failed: %s", type(exc).__name__)
+        raise RuntimeError("Could not connect to the email service.") from exc
+
 
 # ---------------- DATABASE CONNECTION TEST ----------------
 
@@ -704,15 +740,26 @@ def send_otp():
     conn.commit()
     conn.close()
 
-    msg = Message(
-        "PCOS Care Password Reset OTP",
-        sender=app.config["MAIL_USERNAME"],
-        recipients=[email]
-    )
+   
+    try:
+        send_email_resend(
+            to_email=email,
+            subject="PCOS Care Password Reset OTP",
+            body=(
+                f"Your OTP is: {otp}\n\n"
+                "It is valid for 10 minutes. "
+                "If you did not request this, ignore this email."
+            ),
+        )
+    except RuntimeError:
+        app.logger.exception("Password-reset email could not be sent.")
+        return render_template(
+            "forgot_password.html",
+            error="We couldn't send your OTP. Please try again later."
+        )
 
-    msg.body = f"Your OTP is: {otp}\n\nIt is valid for 10 minutes. If you did not request this, ignore this email."
+    return render_template("verify_otp.html", email=email)
 
-    mail.send(msg)
 
     return render_template(
         "verify_otp.html",
@@ -807,35 +854,40 @@ def email_report():
     risk = latest["risk_percentage"]
     bmi = latest["bmi"]
 
-    msg = Message(
-        subject="Your PCOS Care AI Health Report",
-        sender=app.config["MAIL_USERNAME"],
-        recipients=[email]
-    )
-
-    msg.body = f"""
+  
+    report_body = f"""
 PCOS CARE - AI HEALTH REPORT
 
-Prediction : {result}
-
-Risk Percentage : {risk}%
-
-BMI : {bmi}
+Prediction: {result}
+Risk Percentage: {risk}%
+BMI: {bmi}
 
 Thank you for using PCOS Care.
 
-This report is generated using Artificial Intelligence and should not replace professional medical advice.
+This report is generated using Artificial Intelligence
+and should not replace professional medical advice.
 
 Regards,
 PCOS Care Team
 """
 
-    mail.send(msg)
+    try:
+        send_email_resend(
+            to_email=email,
+            subject="Your PCOS Care AI Health Report",
+            body=report_body,
+        )
+    except RuntimeError:
+        app.logger.exception("Health report email could not be sent.")
+        flash(
+            "We couldn't send your report email. Please try again later.",
+            "danger",
+        )
+        return redirect(url_for("home"))
+
     flash("Health report sent successfully!", "success")
-    return render_template(
-        "email_success.html",
-        email=email
-    )
+    return render_template("email_success.html", email=email)
+
 
 @app.route("/profile")
 def profile():
