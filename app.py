@@ -7,7 +7,6 @@ from config import Config
 from plans import build_diet_plan, build_exercise_plan
 from explainability.shap_explainer import explain_prediction
 from datetime import datetime, timedelta
-from werkzeug.security import generate_password_hash
 import pandas as pd
 import joblib
 import os
@@ -227,6 +226,12 @@ def predict():
         return redirect(url_for('login_page'))
 
     try:
+        # Name is only for display on the report; it is NOT a model feature
+        patient_name = request.form.get('Name', '').strip()
+        if not patient_name:
+            raise ValueError("Please enter your full name.")
+        if len(patient_name) > 120:
+            raise ValueError("Name must be 120 characters or fewer.")
 
         age = int(request.form.get('Age'))
         bmi = float(request.form.get('BMI'))
@@ -242,8 +247,8 @@ def predict():
         if hirsutism not in (0, 1, 2, 3):
             raise ValueError("Invalid excess-hair score.")
 
+        # Model input: exactly the features the model was trained on (no Name)
         input_data = {
-
             'Country': [request.form.get('Country')],
             'Age': [age],
             'BMI': [bmi],
@@ -264,7 +269,7 @@ def predict():
         rf_prediction = rf_model.predict(df)[0]
         xgb_prediction = xgb_model.predict(df)[0]
         prediction = best_model.predict(df)[0]
-  
+
         rf_probability = rf_model.predict_proba(df)[0][1] * 100
         xgb_probability = xgb_model.predict_proba(df)[0][1] * 100
 
@@ -303,24 +308,25 @@ def predict():
 
         conn.commit()
         conn.close()
-        
+
         return render_template(
-    'result.html',
-    result=result,
-    color=color,
-    user_data=request.form,
-    bmi_val=df['BMI'][0],
+            'result.html',
+            result=result,
+            color=color,
+            patient_name=patient_name,
+            user_data=request.form,
+            bmi_val=df['BMI'][0],
 
-    rf_prediction="High Risk" if rf_prediction == 1 else "Low Risk",
-    xgb_prediction="High Risk" if xgb_prediction == 1 else "Low Risk",
+            rf_prediction="High Risk" if rf_prediction == 1 else "Low Risk",
+            xgb_prediction="High Risk" if xgb_prediction == 1 else "Low Risk",
 
-    rf_probability=round(rf_probability, 2),
-    xgb_probability=round(xgb_probability, 2),
+            rf_probability=round(rf_probability, 2),
+            xgb_probability=round(xgb_probability, 2),
 
-    selected_model=selected_model,
-    risk_percentage=round(risk_percentage, 2),
-    top_features=top_features
-)
+            selected_model=selected_model,
+            risk_percentage=round(risk_percentage, 2),
+            top_features=top_features
+        )
 
     except ValueError as e:
         flash(str(e), "danger")
@@ -330,7 +336,7 @@ def predict():
         app.logger.exception("Prediction failed")
         flash("Something went wrong while making the prediction. Please check your inputs and try again.", "danger")
         return redirect(url_for("home"))
-    
+
 # ==========================================================
 # PREDICTION HISTORY
 # ==========================================================
@@ -605,9 +611,9 @@ def admin():
 
     # Only these users can access the Admin Dashboard
     allowed_admins = [
-  "syedaasra2407@gmail.com",
-  "khushigupta46576@gmail.com",
-  "ayushikashyap91427@gmail.com"
+        "syedaasra2407@gmail.com",
+        "khushigupta46576@gmail.com",
+        "ayushikashyap91427@gmail.com"
     ]
 
     if session.get("user_email") not in allowed_admins:
@@ -908,7 +914,7 @@ def settings():
         return redirect(url_for("login_page"))
 
     return render_template("settings.html")
- 
+
 @app.route("/doctor_finder")
 def doctor_finder():
 
