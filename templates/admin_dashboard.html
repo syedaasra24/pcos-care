@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -494,6 +493,11 @@
                     Administrator
                 </span>
 
+                <button class="btn btn-outline-rose" type="button" data-bs-toggle="offcanvas"
+                        data-bs-target="#menu" aria-controls="menu" aria-label="Open navigation">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
+
                 <a href="/home" class="btn btn-outline-rose">
                     <i class="fa-solid fa-house me-1"></i>
                     <span class="d-none d-sm-inline">Home</span>
@@ -506,6 +510,9 @@
             </div>
         </div>
     </nav>
+
+    {% set active_page = 'admin' %}
+    {% include 'sidebar.html' %}
 
     <main class="container-fluid dashboard">
 
