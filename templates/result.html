@@ -201,79 +201,8 @@ body.rp{
 
 <!-- SIDEBAR -->
 
-<div class="no-print offcanvas offcanvas-start" tabindex="-1" id="menu">
-
-    <div class="offcanvas-header">
-
-           <a class="navbar-brand fw-bold d-flex align-items-center" href="/home">
-    <i class="fa-solid fa-hand-holding-heart me-2" style="color:#b8587a;"></i>
-    <span style="color:#4b2e43;">PCOS</span>
-    <span class="ms-1" style="color:#b8587a;">Care</span>
-</a>
-        <button
-            class="btn-close"
-            data-bs-dismiss="offcanvas">
-        </button>
-
-    </div>
-
-    <div class="offcanvas-body">
-
-        <a class="btn btn-light w-100 text-start mb-2" href="/home">
-            🏠 Home
-        </a>
-
-        <a class="btn btn-light w-100 text-start mb-2" href="/profile">
-            👤 My Profile
-        </a>
-
-       <a class="btn btn-light w-100 text-start mb-2" href="/settings">
-            ⚙️ Settings
-       </a>
-
-        <a class="btn btn-light w-100 text-start mb-2" href="/history">
-            📊 Prediction History
-        </a>
-
-        <a class="btn btn-light w-100 text-start mb-2" href="/cycle_tracker">
-            🌸 Cycle Tracker
-        </a>
-
-        <a class="btn btn-light w-100 text-start mb-2" href="/diet_planner">
-            🥗 Diet Planner
-        </a>
-
-        <a class="btn btn-light w-100 text-start mb-2" href="/exercise_planner">
-            💪 Exercise Planner
-        </a>
-
-        <a class="btn btn-light w-100 text-start mb-2" href="/doctor_finder">
-            🏥 Doctor Finder
-        </a>
-
-        <a class="btn btn-light w-100 text-start mb-2" href="/home#education">
-            📚 Education
-        </a>
-
-        {% if session.get("user_email") in [
-        "syedaasra2407@gmail.com",
-        "khushigupta46576@gmail.com",
-        "ayushikashyap91427@gmail.com"
-        ] %}
-
-        <a
-            class="btn btn-warning w-100 text-start mb-2"
-            href="/admin">
-
-            👨‍💼 Admin Dashboard
-
-        </a>
-
-        {% endif %}
-
-    </div>
-
-</div>
+{% set active_page = 'predict' %}
+{% include 'sidebar.html' %}
 
 {% set level = 'high' if risk_percentage >= 70 else ('moderate' if risk_percentage >= 40 else 'low') %}
 {% set health_score = ([100 - risk_percentage, 5] | max) | round(1) %}
