@@ -286,7 +286,7 @@ body.rp{
     <div class="eyebrow"><i class="fa-solid fa-hand-holding-heart me-2"></i>PCOS Care</div>
     <h1>Your Wellness Report</h1>
     <div class="meta">
-        <span class="chip"><i class="fa-regular fa-user"></i>{{ user_data.get('Name') }}</span>
+        <span class="chip"><i class="fa-regular fa-user"></i>{{ (patient_name or user_data.get('Name') or session.get('user_name') or 'Not provided')|e }}</span>
         <span class="chip"><i class="fa-regular fa-calendar"></i><span id="today"></span></span>
         <span class="chip"><i class="fa-solid fa-hashtag"></i>Report {{ user_data.get('Age') }}{{ user_data.get('BMI') }}</span>
     </div>
@@ -350,7 +350,7 @@ body.rp{
 <div class="panel">
     <div class="sec"><i class="fa-regular fa-heart"></i><h3>Your Profile</h3></div>
     <div class="profile">
-        <span class="chip"><i class="fa-regular fa-user"></i>{{ user_data.get('Name') }}</span>
+        <span class="chip"><i class="fa-regular fa-user"></i>{{ (patient_name or user_data.get('Name') or session.get('user_name') or 'Not provided')|e }}</span>
         <span class="chip"><i class="fa-solid fa-cake-candles"></i>{{ user_data.get('Age') }} years</span>
         <span class="chip"><i class="fa-solid fa-earth-asia"></i>{{ user_data.get('Country') }}</span>
         <span class="chip"><i class="fa-solid fa-repeat"></i>Cycle: {{ user_data.get('Cycle_Regularity') }}</span>
