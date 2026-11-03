@@ -79,11 +79,11 @@ Add screenshots of your actual application below. Upload them into a folder name
 
 | 🏠 Landing Page | 🔐 Home Page |
 |---|---|
-| ![PCOS Care Home](screenshots/PCOS Care Home.png) | ![Login Page](screenshots/Landing.png) |
+| ![PCOS Care Home](screenshots/PCOSCareHome.png) | ![Login Page](screenshots/Landing.png) |
 
 | 📊 Prediction Form | 🧠 Prediction Results |
 |---|---|
-| ![Prediction Results](screenshots/Prediction form.png) | ![Dashboard](screenshots/Prediction Result.png) |
+| ![Prediction Results](screenshots/Predictionform.png) | ![Dashboard](screenshots/PredictionResult.png) |
 
 > Replace the example filenames with the actual names of your screenshots.
 
