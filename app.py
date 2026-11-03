@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request, redirect, url_for, session, flash
-from flask_mail import Mail, Message
+import requests
 from flask_wtf.csrf import CSRFProtect, CSRFError
 from werkzeug.security import generate_password_hash, check_password_hash
 from database.db import get_connection
@@ -14,9 +14,6 @@ import random
 import secrets
 import re
 from urllib.parse import quote_plus
-import json
-from urllib.request import Request, urlopen
-from urllib.error import HTTPError, URLError
 
 app = Flask(__name__)
 app.secret_key = Config.SECRET_KEY
@@ -30,57 +27,37 @@ def handle_csrf_error(e):
     flash("Your session expired or the form was invalid. Please try again.", "danger")
     return redirect(url_for("login_page"))
 
-# ---------------- EMAIL CONFIGURATION ----------------
+# ---------------- EMAIL CONFIGURATION (Resend HTTP API) ----------------
+# Set these as environment variables on your hosting platform:
+#   RESEND_API_KEY = re_xxxxxxxx
+#   RESEND_FROM    = PCOS Care <noreply@yourdomain.com>   (a verified domain)
+# Until a domain is verified, Resend only lets "onboarding@resend.dev" send,
+# and only to the email address of your own Resend account.
+
+RESEND_API_KEY = os.getenv("RESEND_API_KEY", "")
+RESEND_FROM = os.getenv("RESEND_FROM", "PCOS Care <onboarding@resend.dev>")
+
+print("Resend API key loaded:", bool(RESEND_API_KEY))
+print("Resend sender:", RESEND_FROM)
 
 
-# ---------------- RESEND EMAIL CONFIGURATION ----------------
+def send_email(to, subject, body):
+    """Send a plain-text email through Resend. Raises RuntimeError on failure."""
+    if not RESEND_API_KEY:
+        raise RuntimeError("RESEND_API_KEY is not set")
 
-RESEND_API_KEY = os.environ.get("RESEND_API_KEY", "").strip()
-RESEND_FROM_EMAIL = os.environ.get("RESEND_FROM_EMAIL", "").strip()
-
-
-def send_email_resend(to_email, subject, body):
-    """Send an email through the Resend HTTPS API."""
-    if not RESEND_API_KEY or not RESEND_FROM_EMAIL:
-        raise RuntimeError(
-            "Email service is not configured. Check Render environment variables."
-        )
-
-    payload = {
-        "from": RESEND_FROM_EMAIL,
-        "to": [to_email],
-        "subject": subject,
-        "text": body,
-    }
-
-    request = Request(
+    resp = requests.post(
         "https://api.resend.com/emails",
-        data=json.dumps(payload).encode("utf-8"),
         headers={
             "Authorization": f"Bearer {RESEND_API_KEY}",
             "Content-Type": "application/json",
         },
-        method="POST",
+        json={"from": RESEND_FROM, "to": [to], "subject": subject, "text": body},
+        timeout=15,
     )
 
-    try:
-        with urlopen(request, timeout=15) as response:
-            result = json.loads(response.read().decode("utf-8"))
-            return result
-    except HTTPError as exc:
-        # Do not log the API key or email contents.
-        error_body = exc.read().decode("utf-8", errors="replace")
-        app.logger.error(
-            "Resend rejected email request. HTTP status: %s; response: %s",
-            exc.code,
-            error_body[:500],
-        )
-        raise RuntimeError(
-            f"Resend rejected the email request (HTTP {exc.code})."
-        ) from exc
-    except (URLError, TimeoutError) as exc:
-        app.logger.error("Resend connection failed: %s", type(exc).__name__)
-        raise RuntimeError("Could not connect to the email service.") from exc
+    if resp.status_code >= 300:
+        raise RuntimeError(f"Resend error {resp.status_code}: {resp.text}")
 
 
 # ---------------- DATABASE CONNECTION TEST ----------------
@@ -740,26 +717,18 @@ def send_otp():
     conn.commit()
     conn.close()
 
-   
     try:
-        send_email_resend(
-            to_email=email,
-            subject="PCOS Care Password Reset OTP",
-            body=(
-                f"Your OTP is: {otp}\n\n"
-                "It is valid for 10 minutes. "
-                "If you did not request this, ignore this email."
-            ),
+        send_email(
+            email,
+            "PCOS Care Password Reset OTP",
+            f"Your OTP is: {otp}\n\nIt is valid for 10 minutes. If you did not request this, ignore this email."
         )
-    except RuntimeError:
-        app.logger.exception("Password-reset email could not be sent.")
+    except Exception:
+        app.logger.exception("Could not send OTP email")
         return render_template(
             "forgot_password.html",
-            error="We couldn't send your OTP. Please try again later."
+            error="We could not send the email right now. Please try again in a few minutes."
         )
-
-    return render_template("verify_otp.html", email=email)
-
 
     return render_template(
         "verify_otp.html",
@@ -854,40 +823,35 @@ def email_report():
     risk = latest["risk_percentage"]
     bmi = latest["bmi"]
 
-  
-    report_body = f"""
+    body = f"""
 PCOS CARE - AI HEALTH REPORT
 
-Prediction: {result}
-Risk Percentage: {risk}%
-BMI: {bmi}
+Prediction : {result}
+
+Risk Percentage : {risk}%
+
+BMI : {bmi}
 
 Thank you for using PCOS Care.
 
-This report is generated using Artificial Intelligence
-and should not replace professional medical advice.
+This report is generated using Artificial Intelligence and should not replace professional medical advice.
 
 Regards,
 PCOS Care Team
 """
 
     try:
-        send_email_resend(
-            to_email=email,
-            subject="Your PCOS Care AI Health Report",
-            body=report_body,
-        )
-    except RuntimeError:
-        app.logger.exception("Health report email could not be sent.")
-        flash(
-            "We couldn't send your report email. Please try again later.",
-            "danger",
-        )
+        send_email(email, "Your PCOS Care AI Health Report", body)
+    except Exception:
+        app.logger.exception("Could not send report email")
+        flash("We could not send the report email right now. Please try again later.", "danger")
         return redirect(url_for("home"))
 
     flash("Health report sent successfully!", "success")
-    return render_template("email_success.html", email=email)
-
+    return render_template(
+        "email_success.html",
+        email=email
+    )
 
 @app.route("/profile")
 def profile():
