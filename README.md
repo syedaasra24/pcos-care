@@ -83,7 +83,7 @@ Add screenshots of your actual application below. Upload them into a folder name
 
 | 📊 Prediction Form | 🧠 Prediction Results |
 |---|---|
-| ![Prediction Results](screenshots/Predictionform.png) | ![Dashboard](screenshots/PredictionResult.png) |
+| ![Prediction Results](screenshots/Predictionform.png) | ![Dashboard](screenshots/PredictionResults.png) |
 
 > Replace the example filenames with the actual names of your screenshots.
 
