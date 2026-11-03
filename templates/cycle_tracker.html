@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -281,56 +280,8 @@
     </div>
 </nav>
 
-<div class="offcanvas offcanvas-start" tabindex="-1" id="menu" aria-labelledby="menuLabel">
-    <div class="offcanvas-header">
-        <a class="navbar-brand fw-bold d-flex align-items-center" href="/home" id="menuLabel">
-            <i class="fa-solid fa-hand-holding-heart brand-icon me-2"></i>
-            <span class="brand-name">PCOS</span>
-            <span class="brand-accent ms-1">Care</span>
-        </a>
-        <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close menu"></button>
-    </div>
-
-    <div class="offcanvas-body">
-        <a class="menu-link" href="/home">
-            <i class="fa-solid fa-house"></i> Home
-        </a>
-        <a class="menu-link" href="/profile">
-            <i class="fa-solid fa-user"></i> My Profile
-        </a>
-        <a class="menu-link" href="/settings">
-            <i class="fa-solid fa-gear"></i> Settings
-        </a>
-        <a class="menu-link" href="/history">
-            <i class="fa-solid fa-chart-line"></i> Prediction History
-        </a>
-        <a class="menu-link active" href="/cycle_tracker" aria-current="page">
-            <i class="fa-solid fa-calendar-days"></i> Cycle Tracker
-        </a>
-        <a class="menu-link" href="/diet_planner">
-            <i class="fa-solid fa-utensils"></i> Diet Planner
-        </a>
-        <a class="menu-link" href="/exercise_planner">
-            <i class="fa-solid fa-dumbbell"></i> Exercise Planner
-        </a>
-        <a class="menu-link" href="/doctor_finder">
-            <i class="fa-solid fa-user-doctor"></i> Doctor Finder
-        </a>
-        <a class="menu-link" href="/education">
-            <i class="fa-solid fa-book-open"></i> PCOS Education
-        </a>
-
-        {% if session.get("user_email") in [
-            "syedaasra2407@gmail.com",
-            "khushigupta46576@gmail.com",
-            "ayushikashyap91427@gmail.com"
-        ] %}
-        <a class="menu-link" href="/admin">
-            <i class="fa-solid fa-user-shield"></i> Admin Dashboard
-        </a>
-        {% endif %}
-    </div>
-</div>
+{% set active_page = 'cycle_tracker' %}
+    {% include 'sidebar.html' %}
 
 <main class="container">
     <div class="main">
